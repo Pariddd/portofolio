@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 // Satu-satunya tempat domain didefinisikan. Ganti di sini saat domain asli tersedia.
-const SITE_URL = 'https://faridkurniawan.pages.dev';
+const SITE_URL = 'https://portofolio.farid-kurniawan0412.workers.dev';
 
 export default defineConfig({
   site: SITE_URL,

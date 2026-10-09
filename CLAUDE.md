@@ -22,7 +22,7 @@ Konten ditambahkan lewat commit Git (Markdown/YAML/JSON), **bukan** lewat form u
 
 **Keputusan yang sudah tetap:**
 
-- Domain sementara: `faridkurniawan.pages.dev` — hanya didefinisikan sekali di `astro.config.mjs` (`site`), jangan di-hard-code di tempat lain.
+- Domain sementara: `portofolio.farid-kurniawan0412.workers.dev` — hanya didefinisikan sekali di `astro.config.mjs` (`site`), jangan di-hard-code di tempat lain.
 - Kontak: GitHub, LinkedIn, WhatsApp (`https://wa.me/<nomor>`), data di `src/data/profile.ts`. Tidak ada email publik dan PGP di v1.
 - CV: PDF Bahasa Indonesia di `public/cv/CV-Parid.pdf`.
 - Bahasa UI: Indonesia (`lang="id"`).
@@ -42,7 +42,7 @@ Konten ditambahkan lewat commit Git (Markdown/YAML/JSON), **bukan** lewat form u
 | Lint/format         | ESLint 10 (+ `eslint-plugin-astro`, `eslint-plugin-jsx-a11y-x`) + Prettier              |
 | Test                | Vitest (unit), Playwright + @axe-core/playwright (smoke & a11y)                         |
 | CI/CD               | GitHub Actions (sync HTB, audit, build)                                                 |
-| Hosting             | Cloudflare Pages (header via `public/_headers`)                                         |
+| Hosting             | Cloudflare Workers static assets, deploy via Git (header via `public/_headers`)         |
 | Package manager     | npm (lockfile wajib di-commit)                                                          |
 
 Jangan menambah dependensi baru tanpa persetujuan (lihat §5).
@@ -102,7 +102,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ├── vitest.config.ts           ✅ # Vitest (tests/unit)
 ├── package.json / package-lock.json ✅
 ├── public/
-│   ├── _headers               ✅ # Header keamanan Cloudflare Pages (CSP, HSTS, dll.)
+│   ├── _headers               ✅ # Header keamanan Cloudflare (CSP, HSTS, dll.)
 │   ├── .well-known/security.txt  # RFC 9116
 │   ├── robots.txt
 │   ├── fonts/                 ✅ # Font self-host (woff2 variable, subset Latin) + lisensi OFL
@@ -208,11 +208,11 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 
 > Perbarui daftar ini setiap kali fitur selesai dan lulus `lint + typecheck + test + build`. Format: `- [x] Nama fitur — catatan singkat (tanggal)`.
 
-- [x] M0 — Setup project: Astro 7 + TS strict + Tailwind v4 + React/Motion terpasang, ESLint/Prettier/Vitest, token desain, font self-host, BaseLayout dengan script tema anti-flash, `_headers` + `check:csp`. **Deploy pertama ditunda** (belum ada remote/Cloudflare Pages). (2026-10-09)
+- [x] M0 — Setup project: Astro 7 + TS strict + Tailwind v4 + React/Motion terpasang, ESLint/Prettier/Vitest, token desain, font self-host, BaseLayout dengan script tema anti-flash, `_headers` + `check:csp`. (2026-10-09)
+- [x] Deploy pertama — repo `Pariddd/portofolio` terhubung ke Cloudflare Workers (static assets), auto-deploy tiap push ke `main`; header keamanan dari `_headers` terverifikasi di situs live. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] Deploy pertama ke Cloudflare Pages + verifikasi header keamanan (sisa M0)
 - [ ] F2 — Tema terang/gelap
 - [ ] F3 — Hero (nama, role, CTA, ilustrasi)
 - [ ] F4 — Marquee tools
