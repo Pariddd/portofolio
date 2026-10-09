@@ -1,50 +1,51 @@
 ---
 // Komponen Astro, bukan island React: satu tombol tidak sepadan dengan runtime React
 // (~65 KB gzip) dan script inline hidrasi yang harus di-hash di CSP.
+// Ikon dan label menunjukkan tema tujuan; keduanya dipilih lewat CSS dari class `.dark`.
 const ICON_CLASS =
-  'ease-main col-start-1 row-start-1 size-5 transition duration-200 motion-reduce:transition-none';
+  'ease-main col-start-1 row-start-1 size-4 transition duration-200 motion-reduce:transition-none';
 ---
 
 <button
   type="button"
   data-theme-toggle
-  aria-label="Tema gelap"
-  aria-pressed="false"
-  class="border-line text-ink hover:border-accent hover:text-accent grid size-12 shrink-0 place-items-center border"
+  aria-label="Ganti mode terang/gelap"
+  class="border-line text-ink hover:border-accent hover:text-accent inline-flex min-h-11 shrink-0 items-center gap-2 border px-3.5 font-mono text-[12px]"
 >
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.75"
-    stroke-linecap="square"
-    aria-hidden="true"
-    class:list={[ICON_CLASS, 'dark:scale-50 dark:-rotate-90 dark:opacity-0']}
-  >
-    <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
-  </svg>
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.75"
-    stroke-linecap="square"
-    aria-hidden="true"
-    class:list={[
-      ICON_CLASS,
-      'scale-50 rotate-90 opacity-0 dark:scale-100 dark:rotate-0 dark:opacity-100',
-    ]}
-  >
-    <circle cx="12" cy="12" r="4"></circle>
-    <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
-  </svg>
+  <span class="grid place-items-center" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="square"
+      class:list={[ICON_CLASS, 'dark:scale-50 dark:-rotate-90 dark:opacity-0']}
+    >
+      <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+    </svg>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="square"
+      class:list={[
+        ICON_CLASS,
+        'scale-50 rotate-90 opacity-0 dark:scale-100 dark:rotate-0 dark:opacity-100',
+      ]}
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
+    </svg>
+  </span>
+  <span class="dark:hidden">gelap</span>
+  <span class="hidden dark:inline">terang</span>
 </button>
 
 <script>
   import { oppositeTheme, parseStoredTheme, THEME_STORAGE_KEY, type Theme } from '../../lib/theme';
 
   const root = document.documentElement;
-  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 
   function readStoredTheme(): Theme | null {
     try {
@@ -55,21 +56,13 @@ const ICON_CLASS =
     }
   }
 
-  // Class `.dark` sudah dipasang script inline di BaseLayout sebelum paint;
-  // di sini hanya diubah dan dicerminkan ke aria-pressed.
+  // Class `.dark` sudah dipasang script inline di BaseLayout sebelum paint.
   function applyTheme(theme: Theme): void {
     root.classList.toggle('dark', theme === 'dark');
-    button?.setAttribute('aria-pressed', String(theme === 'dark'));
   }
 
-  function currentTheme(): Theme {
-    return root.classList.contains('dark') ? 'dark' : 'light';
-  }
-
-  applyTheme(currentTheme());
-
-  button?.addEventListener('click', () => {
-    const next = oppositeTheme(currentTheme());
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const next = oppositeTheme(root.classList.contains('dark') ? 'dark' : 'light');
     applyTheme(next);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);

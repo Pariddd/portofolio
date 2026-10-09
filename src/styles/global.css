@@ -30,9 +30,9 @@
   --accent: #0d7a79;
   --accent-hi: #2cc6be;
   --heat-0: #e1e8e7;
-  --heat-1: #a9d3d0;
-  --heat-2: #6fbab7;
-  --heat-3: #379c9a;
+  --heat-1: #b3d9d6;
+  --heat-2: #6fb8b3;
+  --heat-3: #2e9592;
   --heat-4: #0d7a79;
 }
 
@@ -47,9 +47,9 @@
   --accent: #5eead4;
   --accent-hi: #5eead4;
   --heat-0: #16211f;
-  --heat-1: #1f4f49;
-  --heat-2: #2f8177;
-  --heat-3: #45b5a5;
+  --heat-1: #1c4440;
+  --heat-2: #25716a;
+  --heat-3: #3bae9f;
   --heat-4: #5eead4;
 }
 
@@ -82,13 +82,6 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-  }
-
-  /* Navbar sticky mulai 768 px; target anchor tidak boleh tertutup olehnya. */
-  @media (width >= 48rem) {
-    html {
-      scroll-padding-top: 88px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {

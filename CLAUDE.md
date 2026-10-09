@@ -106,14 +106,14 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── .well-known/security.txt  # RFC 9116
 │   ├── robots.txt
 │   ├── fonts/                 ✅ # Font self-host (woff2 variable, subset Latin) + lisensi OFL
-│   └── cv/                       # CV PDF
+│   └── cv/                    ✅ # CV-Parid.pdf
 ├── scripts/
 │   ├── check-csp.mjs          ✅ # Cocokkan inline script/style di dist/ dengan CSP _headers
 │   └── sync-htb.ts               # Ambil data HTB → src/data/htb-activity.json
 ├── src/
-│   ├── assets/                   # Gambar yang dioptimasi Astro (hero, foto, sertifikat)
+│   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg (nanti: foto, sertifikat)
 │   ├── components/
-│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle (nanti: Footer, SectionHeader, ...)
+│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle, Hero (nanti: Footer, SectionHeader, ...)
 │   │   └── react/                # Islands beranimasi (.tsx): Preload, HeroArt, PhotoCard, Heatmap, Marquee
 │   ├── content/                  # Content Collections
 │   │   ├── projects/             # *.md, satu file per project
@@ -123,7 +123,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── data/
 │   │   ├── htb-activity.json     # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
 │   │   ├── nav.ts             ✅ # Link anchor navbar
-│   │   ├── profile.ts         ✅ # Baru nama (nanti: role, ringkasan, fokus, pendidikan, link sosial)
+│   │   ├── profile.ts         ✅ # Nama, tagline, role, ringkasan, handle, path CV (nanti: fokus, pendidikan, link sosial)
 │   │   └── tools.ts              # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema, skip link
@@ -213,10 +213,10 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] M0 — Setup project: Astro 7 + TS strict + Tailwind v4 + React/Motion terpasang, ESLint/Prettier/Vitest, token desain, font self-host, BaseLayout dengan script tema anti-flash, `_headers` + `check:csp`. (2026-10-09)
 - [x] Deploy pertama — repo `Pariddd/portofolio` terhubung ke Cloudflare Workers (static assets), auto-deploy tiap push ke `main`; header keamanan dari `_headers` terverifikasi di situs live. (2026-10-09)
 - [x] F2 — Tema terang/gelap + Navbar: toggle di navbar (komponen Astro + script eksternal, bukan island React), ikut `prefers-color-scheme` sampai pengguna memilih, pilihan disimpan di `localStorage`. Link navbar menunjuk ke section yang belum dibuat. (2026-10-09)
+- [x] F3 — Hero statis mengikuti artboard FINAL: tagline, nama, role, ringkasan, CTA project + CV, panel gambar miring dengan bingkai dan cincin. Gambar `src/assets/hero.jpg` **sementara** (674 px, persegi, masih berlatar); lencana `handle` tampil setelah `PROFILE.handle` diisi. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] F3 — Hero (nama, role, CTA, ilustrasi)
 - [ ] F4 — Marquee tools
 - [ ] F5 — Tentang saya + kartu akses
 - [ ] F6 — Project pilihan (Content Collection)
@@ -233,4 +233,12 @@ Rencana (lihat `docs/PRD.md` §12):
 
 ## Referensi desain
 
-Mockup ada di canvas Claude Design "Portofolio Parid". Artboard acuan: **"Hero — gambar + teal"** (hero final) dan **"Hero + About — animasi"** (About + scan reveal). Artboard lain adalah eksplorasi lama dan bukan acuan.
+Mockup ada di canvas Claude Design "Portofolio Parid". Satu-satunya artboard acuan: **"FINAL — halaman lengkap"**. Artboard lain adalah eksplorasi lama dan bukan acuan.
+
+Catatan dari artboard FINAL yang tidak tertulis di bagian lain:
+
+- Navbar tidak sticky dan tanpa garis bawah; link 15 px (bukan mono); tombol tema berlabel mono 12 px.
+- Hero: panel gambar miring `polygon(0 6%, 100% 0, 100% 100%, 0 100%)` + bingkai offset 14 px, cincin putus-putus berbentuk lingkaran di belakangnya (satu-satunya pengecualian radius selain heatmap), lencana `handle`.
+- CTA utama: latar `--ink`, teks `--bg`, 15 px weight 600.
+- Footer/kontak diberi nomor `05` ("Mari ngobrol.").
+- Nilai warna di mockup yang berbeda dari tabel §2 (`--accent` terang `#0E7C7B`) **tidak** dipakai; tabel §2 yang berlaku.
