@@ -120,7 +120,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg, projects/ (screenshot), certificates/ (gambar sertifikat); isi dua folder terakhir masih contoh
 │   ├── components/
 │   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Dialog, Footer
-│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs, Gallery, CountUp, Tooltip, BackToTop
+│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, FloatCard, Dialogs, Gallery, CountUp, Tooltip, BackToTop
 │   ├── content/               ✅ # Content Collections
 │   │   ├── projects/          ✅ # *.md, satu file per project; isi Markdown = penjelasan di pop-up (URL, screenshot, penjelasan masih dummy)
 │   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi, gambar, dan PDF masih contoh, `sample: true`)
@@ -226,7 +226,7 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F6 — Project pilihan: Content Collection `projects` (skema Zod di `src/content.config.ts`), dua project dari mockup. Kartu tanpa `url` tidak menjadi link; project ketiga belum ada, URL masih dummy. (2026-10-09)
 - [x] F1 — Preload TLS handshake: island `Preload`, ±2,3 detik, tampil di setiap muat halaman dan ditutup "Selamat datang.", tombol lewati, tidak tampil tanpa JavaScript atau saat reduced motion. (2026-10-09)
 - [x] Animasi hero (island `HeroMotion`): kilatan pembuka, panel gambar naik, teks naik bertahap, busur listrik, cincin berputar, parallax pointer. "Kilau mata" tidak ada di artboard FINAL dan tidak dibuat. (2026-10-09)
-- [x] Animasi scan reveal foto (island `Reveal`): tirai membuka sekali saat masuk viewport, lalu garis pindai berulang tiap 4 detik; kartu Tentang tidak lagi punya efek hover. (2026-10-09)
+- [x] Animasi scan reveal foto (island `Reveal`): tirai membuka sekali saat masuk viewport, lalu garis pindai berulang tiap 4 detik. Kartunya mengambang (island `FloatCard`, naik-turun 7 detik) dengan lencana teks melingkar yang berputar di pojok; kartu Tentang tidak lagi punya efek hover. (2026-10-09)
 - [x] F9 — Sync HTB: `scripts/sync-htb.ts` + workflow `sync-htb.yml` sekali sehari (permintaan Parid), **tanpa token** (endpoint publik profil HTB, tidak resmi/terdokumentasi; respons divalidasi Zod, bila gagal data lama dibiarkan). (2026-10-09)
 - [x] F7 — Section Aktivitas dari data nyata: baris statistik (level, total XP, streak, modul Academy) dengan angka menghitung naik, dan heatmap harian. HTB tidak membuka aktivitas harian, jadi riwayat dibangun dari selisih total XP antar-sync, mulai 2026-10-09; hari sebelum itu kosong. (2026-10-09)
 - [x] F8 — Section Sertifikat dari Content Collection `certificates`; isi masih **contoh** dan berlabel "data contoh". (2026-10-09)

@@ -24,7 +24,8 @@ export const PROFILE = {
    */
   about:
     'Mahasiswa Informatika Universitas Malikussaleh yang fokus pada keamanan siber: web exploitation, reverse engineering, dan machine learning untuk deteksi malware.',
-  photoAlt: 'Parid berdiri bersandar pada perahu putih di tepi danau, berkaus hitam.',
+  photoAlt:
+    'Parid berdiri di tepi tebing berpagar, menoleh ke teluk berair biru jernih dan bukit berhutan.',
   location: 'Lhokseumawe, Aceh',
   status: null as string | null,
   accessLabel: 'ACCESS · LVL 3',

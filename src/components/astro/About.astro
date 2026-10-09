@@ -2,11 +2,15 @@
 import { Picture } from 'astro:assets';
 import photo from '../../assets/photo.jpg';
 import { PROFILE } from '../../data/profile';
+import FloatCard from '../react/FloatCard';
 import Reveal from '../react/Reveal';
 import SectionHeader from './SectionHeader.astro';
 
 const { education } = PROFILE;
 const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
+// Teks lencana melingkar di pojok kartu: role, diulang supaya memenuhi lingkaran.
+const orbitText = `${PROFILE.role.replace(' & ', ' · ')} · `;
+const ORBIT_PATH = 'M66,66 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0';
 ---
 
 <section
@@ -18,7 +22,10 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
     <SectionHeader number="01" title="Tentang saya" id="judul-tentang" />
   </div>
 
-  <div class="border-line bg-panel w-full max-w-[380px] self-start border p-5 md:col-span-5 lg:col-span-4">
+  <FloatCard
+    client:idle
+    className="border-line bg-panel relative w-full max-w-[380px] self-start border p-5 md:col-span-5 lg:col-span-4"
+  >
     {/* Scan reveal: tirai turun sekali saat foto masuk viewport (lihat Reveal.tsx). */}
     <Reveal client:idle effect="scan" className="bg-line relative aspect-[4/5] overflow-hidden">
       <Picture
@@ -26,7 +33,7 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
         alt={PROFILE.photoAlt}
         formats={['avif', 'webp']}
         sizes="(min-width: 1024px) 317px, (min-width: 768px) 30vw, 340px"
-        widths={[320, photo.width]}
+        widths={[320, 640, 960]}
         loading="lazy"
         class="size-full object-cover"
       />
@@ -50,7 +57,23 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
       {PROFILE.location}
       {PROFILE.status !== null && ` · ${PROFILE.status}`}
     </p>
-  </div>
+    {/* Lencana dekoratif: isinya mengulang role yang sudah tertulis di hero. */}
+    <svg
+      data-orbit
+      viewBox="0 0 132 132"
+      aria-hidden="true"
+      class="text-ink absolute -top-4 right-2 size-[108px] md:-top-10 md:-right-6 md:size-[132px]"
+    >
+      <circle cx="66" cy="66" r="65" class="fill-bg stroke-line" />
+      <path id="jalur-lencana" d={ORBIT_PATH} fill="none" />
+      <text class="fill-current font-mono text-[11px] tracking-[0.08em] uppercase">
+        <textPath href="#jalur-lencana" textLength="308" lengthAdjust="spacing">
+          {orbitText}
+        </textPath>
+      </text>
+      <circle cx="66" cy="66" r="5" class="fill-accent" />
+    </svg>
+  </FloatCard>
 
   <Reveal client:idle effect="rise" className="flex flex-col gap-10 md:col-span-7 lg:col-span-8">
     <p data-reveal-item class="text-[20px] leading-[1.5] tracking-[-0.01em] md:text-[22px]">
