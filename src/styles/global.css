@@ -122,6 +122,11 @@
     font-size: 44px;
   }
 
+  /* Halaman di belakang pop-up tidak ikut tergulir. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;

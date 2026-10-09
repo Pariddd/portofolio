@@ -1,12 +1,19 @@
 ---
+import { Picture } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import Dialogs from '../react/Dialogs';
 import Reveal from '../react/Reveal';
+import Dialog from './Dialog.astro';
 import SectionHeader from './SectionHeader.astro';
 
-const certificates = (await getCollection('certificates')).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const certificates = (await getCollection('certificates'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((entry) => ({ data: entry.data, dialogId: `sertifikat-${entry.id}` }));
 const hasSample = certificates.some((certificate) => certificate.data.sample);
+
+const EXTERNAL = { target: '_blank', rel: 'noopener noreferrer' };
+const BUTTON_CLASS =
+  'inline-flex min-h-12 items-center gap-2 border px-[22px] text-[15px] font-semibold';
 ---
 
 <section id="sertifikat" aria-labelledby="judul-sertifikat" class="container-page">
@@ -18,18 +25,27 @@ const hasSample = certificates.some((certificate) => certificate.data.sample);
 
     <Reveal client:idle effect="rise" className="mt-10">
       <ul class="border-ink border-t">
-        {certificates.map(({ data }) => (
+        {certificates.map(({ data, dialogId }) => (
           <li
             data-reveal-item
-            class="border-line grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] items-center gap-x-4 gap-y-1 border-b py-5"
+            class="border-line grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] items-center gap-x-4 gap-y-1 border-b py-3"
           >
-            <span class="font-semibold">{data.name}</span>
+            <button
+              type="button"
+              data-dialog-open={dialogId}
+              aria-haspopup="dialog"
+              class="hover:text-accent inline-flex min-h-11 items-center gap-2 text-left font-semibold"
+            >
+              {data.name}
+              <span class="text-accent font-mono text-[12px]" aria-hidden="true">
+                lihat +
+              </span>
+            </button>
             <span class="text-muted text-[15px]">{data.issuer}</span>
             <span class="text-faint font-mono text-[12px]">ID {data.credentialId}</span>
             <a
               href={data.verifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...EXTERNAL}
               class="text-accent hover:text-ink inline-flex min-h-11 items-center text-[14px] underline underline-offset-4 lg:justify-self-end"
             >
               Verifikasi<span class="sr-only"> {data.name} (tab baru)</span>
@@ -41,5 +57,58 @@ const hasSample = certificates.some((certificate) => certificate.data.sample);
         ))}
       </ul>
     </Reveal>
+
+    <Dialogs client:idle>
+      {certificates.map(({ data, dialogId }) => (
+        <Dialog
+          id={dialogId}
+          label={data.sample ? 'SERTIFIKAT · data contoh' : 'SERTIFIKAT'}
+          title={data.name}
+        >
+          {data.image !== undefined && (
+            <Picture
+              src={data.image}
+              alt={`Sertifikat ${data.name} dari ${data.issuer}`}
+              formats={['avif', 'webp']}
+              widths={[640, 1280]}
+              sizes="(min-width: 960px) 854px, calc(100vw - 74px)"
+              loading="lazy"
+              class="border-line mx-auto h-auto max-h-[58dvh] w-auto max-w-full border"
+            />
+          )}
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <p class="text-muted text-[15px]">
+              {data.issuer}
+              <span class="text-faint ml-2 font-mono text-[12px]">ID {data.credentialId}</span>
+            </p>
+            <div class="flex flex-wrap gap-3">
+              {data.pdf !== undefined && (
+                <a
+                  href={data.pdf}
+                  {...EXTERNAL}
+                  class:list={[
+                    BUTTON_CLASS,
+                    'border-ink text-ink hover:border-accent hover:text-accent',
+                  ]}
+                >
+                  Buka PDF<span class="sr-only"> {data.name} (tab baru)</span>
+                </a>
+              )}
+              <a
+                href={data.verifyUrl}
+                {...EXTERNAL}
+                class:list={[
+                  BUTTON_CLASS,
+                  'border-ink bg-ink text-bg hover:border-accent hover:bg-accent',
+                ]}
+              >
+                Verifikasi<span class="sr-only"> {data.name} (tab baru)</span>
+                <span aria-hidden="true">&nearr;</span>
+              </a>
+            </div>
+          </div>
+        </Dialog>
+      ))}
+    </Dialogs>
   </div>
 </section>

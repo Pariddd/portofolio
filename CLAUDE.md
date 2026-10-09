@@ -111,18 +111,19 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── .well-known/security.txt  # RFC 9116
 │   ├── robots.txt
 │   ├── fonts/                 ✅ # Font self-host (woff2 variable, subset Latin) + lisensi OFL
-│   └── cv/                    ✅ # CV-Parid.pdf
+│   ├── cv/                    ✅ # CV-Parid.pdf
+│   └── certificates/          ✅ # PDF sertifikat (saat ini contoh.pdf)
 ├── scripts/
 │   ├── check-csp.mjs          ✅ # Cocokkan hash inline script dan <style> di dist/ dengan CSP _headers
 │   └── sync-htb.ts               # Ambil data HTB → src/data/htb-activity.json
 ├── src/
-│   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg (nanti: sertifikat)
+│   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg, projects/ (screenshot), certificates/ (gambar sertifikat); isi dua folder terakhir masih contoh
 │   ├── components/
-│   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Footer
-│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal
+│   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Dialog, Footer
+│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs
 │   ├── content/               ✅ # Content Collections
-│   │   ├── projects/          ✅ # *.md, satu file per project (URL masih dummy)
-│   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi masih contoh, `sample: true`)
+│   │   ├── projects/          ✅ # *.md, satu file per project; isi Markdown = penjelasan di pop-up (URL, screenshot, penjelasan masih dummy)
+│   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi, gambar, dan PDF masih contoh, `sample: true`)
 │   │   └── writeups/             # (v2, belum ditampilkan)
 │   ├── content.config.ts      ✅ # Skema Zod: projects, certificates
 │   ├── data/
@@ -232,11 +233,12 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F10 (sebagian) — Footer/kontak; LinkedIn & WhatsApp masih dummy, `security.txt` belum ada. (2026-10-09)
 - [x] F12 — Halaman 404. (2026-10-09)
 - [x] Migrasi semua animasi dari CSS ke Motion di island React (pilihan Parid): CSP ditambah 3 hash script hidrasi + 1 hash `<style>`, `check:csp` memeriksa keduanya, JS halaman ±77 KB gzip. (2026-10-09)
-- [x] Animasi teks: judul hero per huruf; reveal `rise` untuk judul section, teks Tentang, kartu project, sertifikat, dan kontak. (2026-10-09)
+- [x] Animasi teks: judul hero per huruf dengan titik aksen berdenyut; reveal `rise` untuk judul section, teks Tentang, kartu project, sertifikat, dan kontak. (2026-10-09)
+- [x] Pop-up detail (`Dialog.astro` + island `Dialogs`, elemen `<dialog>` bawaan): project menampilkan penjelasan, screenshot, stack, dan tombol "Buka repo"; sertifikat menampilkan gambar, tombol "Buka PDF" dan "Verifikasi". PDF tidak ditanam dalam frame (`frame-ancestors 'none'` tetap). Gambar, PDF, penjelasan, dan URL masih **contoh**. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] Ganti semua data dummy: URL project, tiga sertifikat contoh, LinkedIn & WhatsApp, ringkasan `about`, gambar hero
+- [ ] Ganti semua data dummy: URL repo, penjelasan dan screenshot project, tiga sertifikat contoh (isi, gambar, PDF), LinkedIn & WhatsApp, ringkasan `about`, gambar hero
 - [ ] `security.txt` (butuh kontak asli), favicon
 - [ ] Atur `not_found_handling` di Cloudflare supaya `404.html` dipakai
 - [ ] F9 — Sync HTB via GitHub Actions
@@ -251,7 +253,7 @@ Mockup ada di canvas Claude Design "Portofolio Parid". Satu-satunya artboard acu
 Catatan dari artboard FINAL yang tidak tertulis di bagian lain:
 
 - Navbar tidak sticky dan tanpa garis bawah; link 15 px (bukan mono); tombol tema berlabel mono 12 px.
-- Hero: panel gambar miring `polygon(0 6%, 100% 0, 100% 100%, 0 100%)` + bingkai offset 14 px, cincin putus-putus berbentuk lingkaran di belakangnya (satu-satunya pengecualian radius selain heatmap), lencana `handle`.
+- Hero: panel gambar miring `polygon(0 6%, 100% 0, 100% 100%, 0 100%)` + bingkai offset 14 px, cincin putus-putus 2 px berwarna aksen (transparan) berbentuk lingkaran di belakangnya (satu-satunya pengecualian radius selain heatmap), lencana `handle`.
 - CTA utama: latar `--ink`, teks `--bg`, 15 px weight 600.
 - Footer/kontak diberi nomor `05` ("Mari ngobrol.").
 - Nilai warna di mockup yang berbeda dari tabel §2 (`--accent` terang `#0E7C7B`) **tidak** dipakai; tabel §2 yang berlaku.

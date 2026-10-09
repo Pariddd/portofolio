@@ -3,5 +3,8 @@ name: Sertifikat contoh 1
 issuer: Penerbit contoh
 credentialId: CONTOH-001
 verifyUrl: https://example.com/
+# DUMMY: gambar halaman pertama sertifikat dan PDF-nya.
+image: ../../assets/certificates/contoh.png
+pdf: /certificates/contoh.pdf
 sample: true
 order: 1

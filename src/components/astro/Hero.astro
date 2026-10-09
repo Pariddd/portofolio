@@ -27,7 +27,7 @@ const ARC_CLASS =
 <HeroMotion client:load className="relative overflow-x-clip">
   <div
     data-hero="strike"
-    class="bg-accent-hi pointer-events-none absolute inset-0 z-10 opacity-0 mix-blend-screen"
+    class="bg-accent-hi pointer-events-none absolute inset-0 z-10 opacity-0 mix-blend-multiply dark:mix-blend-screen"
     aria-hidden="true"
   ></div>
 
@@ -47,7 +47,13 @@ const ARC_CLASS =
           <span class="block whitespace-nowrap" aria-hidden="true">
             {line.map(({ char, accent }) => (
               <span data-hero="char" class:list={['inline-block', accent && 'text-accent']}>
-                {char}
+                {accent ? (
+                  <span data-hero="dot" class="inline-block origin-[50%_82%]">
+                    {char}
+                  </span>
+                ) : (
+                  char
+                )}
               </span>
             ))}
           </span>
@@ -87,7 +93,7 @@ const ARC_CLASS =
     >
       <div
         data-hero="ring"
-        class="border-line absolute hidden aspect-square w-full rounded-full border border-dashed md:block"
+        class="border-accent/55 dark:border-accent/45 absolute hidden aspect-square w-full rounded-full border-2 border-dashed md:block"
         aria-hidden="true"
       ></div>
       <div data-depth="5.6" class="relative aspect-[44/50] w-[calc(100%-28px)] max-w-[440px]">

@@ -1,10 +1,20 @@
 ---
-import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import Dialogs from '../react/Dialogs';
 import Reveal from '../react/Reveal';
+import Dialog from './Dialog.astro';
 import ProjectCard from './ProjectCard.astro';
 import SectionHeader from './SectionHeader.astro';
 
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const entries = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const projects = await Promise.all(
+  entries.map(async (entry) => ({
+    data: entry.data,
+    dialogId: `project-${entry.id}`,
+    Content: (await render(entry)).Content,
+  })),
+);
 ---
 
 <section id="project" aria-labelledby="judul-project" class="container-page">
@@ -12,12 +22,48 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
     <SectionHeader number="02" title="Project pilihan" id="judul-project" />
     <Reveal client:idle effect="rise" className="mt-10">
       <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-6">
-        {projects.map((project) => (
+        {projects.map(({ data, dialogId }) => (
           <li data-reveal-item>
-            <ProjectCard project={project.data} />
+            <ProjectCard project={data} dialogId={dialogId} />
           </li>
         ))}
       </ul>
     </Reveal>
+
+    <Dialogs client:idle>
+      {projects.map(({ data, dialogId, Content }) => (
+        <Dialog id={dialogId} label={`${data.category} · ${data.topic}`} title={data.title}>
+          <div class="text-muted flex flex-col gap-3">
+            <Content />
+          </div>
+          {data.screenshots.map((screenshot, index) => (
+            <Picture
+              src={screenshot}
+              alt={`Tangkapan layar ${data.title} (${index + 1} dari ${data.screenshots.length})`}
+              formats={['avif', 'webp']}
+              widths={[640, 1280]}
+              sizes="(min-width: 960px) 854px, calc(100vw - 74px)"
+              loading="lazy"
+              class="border-line h-auto w-full border"
+            />
+          ))}
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <p class="text-faint font-mono text-[12px]">{data.stack.join(' · ')}</p>
+            {data.url !== undefined && (
+              <a
+                href={data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="border-ink bg-ink text-bg hover:border-accent hover:bg-accent inline-flex min-h-12 items-center gap-2 border px-[22px] text-[15px] font-semibold"
+              >
+                Buka repo
+                <span class="sr-only"> {data.title} (tab baru)</span>
+                <span aria-hidden="true">&nearr;</span>
+              </a>
+            )}
+          </div>
+        </Dialog>
+      ))}
+    </Dialogs>
   </div>
 </section>

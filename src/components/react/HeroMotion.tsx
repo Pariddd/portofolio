@@ -45,6 +45,15 @@ export default function HeroMotion({ className, children }: Props) {
       );
     }
 
+    // Titik aksen di akhir nama berdenyut pelan; hurufnya sendiri diam.
+    for (const dot of all('dot')) {
+      animate(
+        dot,
+        { opacity: [1, 0.55, 1], transform: ['scale(1)', 'scale(1.18)', 'scale(1)'] },
+        { duration: 2.4, ease: 'easeInOut', repeat: Infinity },
+      );
+    }
+
     // Kilat singkat lalu lama padam: dua kedipan per putaran, di bawah batas WCAG 2.3.1.
     all('arc').forEach((arc, index) => {
       const timing = ARCS[index % ARCS.length];
