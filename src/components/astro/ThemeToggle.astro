@@ -1,0 +1,84 @@
+---
+// Komponen Astro, bukan island React: satu tombol tidak sepadan dengan runtime React
+// (~65 KB gzip) dan script inline hidrasi yang harus di-hash di CSP.
+const ICON_CLASS =
+  'ease-main col-start-1 row-start-1 size-5 transition duration-200 motion-reduce:transition-none';
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  aria-label="Tema gelap"
+  aria-pressed="false"
+  class="border-line text-ink hover:border-accent hover:text-accent grid size-12 shrink-0 place-items-center border"
+>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="square"
+    aria-hidden="true"
+    class:list={[ICON_CLASS, 'dark:scale-50 dark:-rotate-90 dark:opacity-0']}
+  >
+    <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path>
+  </svg>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="square"
+    aria-hidden="true"
+    class:list={[
+      ICON_CLASS,
+      'scale-50 rotate-90 opacity-0 dark:scale-100 dark:rotate-0 dark:opacity-100',
+    ]}
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"></path>
+  </svg>
+</button>
+
+<script>
+  import { oppositeTheme, parseStoredTheme, THEME_STORAGE_KEY, type Theme } from '../../lib/theme';
+
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+  function readStoredTheme(): Theme | null {
+    try {
+      return parseStoredTheme(localStorage.getItem(THEME_STORAGE_KEY));
+    } catch {
+      // Storage diblokir: anggap belum ada pilihan.
+      return null;
+    }
+  }
+
+  // Class `.dark` sudah dipasang script inline di BaseLayout sebelum paint;
+  // di sini hanya diubah dan dicerminkan ke aria-pressed.
+  function applyTheme(theme: Theme): void {
+    root.classList.toggle('dark', theme === 'dark');
+    button?.setAttribute('aria-pressed', String(theme === 'dark'));
+  }
+
+  function currentTheme(): Theme {
+    return root.classList.contains('dark') ? 'dark' : 'light';
+  }
+
+  applyTheme(currentTheme());
+
+  button?.addEventListener('click', () => {
+    const next = oppositeTheme(currentTheme());
+    applyTheme(next);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, next);
+    } catch {
+      // Storage diblokir: tema tetap berganti untuk kunjungan ini.
+    }
+  });
+
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    if (readStoredTheme() === null) applyTheme(event.matches ? 'dark' : 'light');
+  });
+</script>

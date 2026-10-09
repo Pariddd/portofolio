@@ -1,0 +1,31 @@
+---
+import { NAV_LINKS } from '../../data/nav';
+import { PROFILE } from '../../data/profile';
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="border-line bg-bg border-b md:sticky md:top-0 md:z-40">
+  <div class="container-page flex flex-wrap items-center justify-between gap-x-8 py-2 md:py-3">
+    <a
+      href="/"
+      class="after:text-accent inline-flex min-h-12 items-center text-[22px] font-extrabold tracking-[-0.04em] after:content-['.']"
+    >
+      {PROFILE.name}
+    </a>
+    <nav aria-label="Utama" class="order-last w-full md:order-none md:ml-auto md:w-auto">
+      <ul class="-mx-2.5 flex md:mx-0 md:gap-2">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-muted hover:text-accent inline-flex min-h-11 items-center px-2.5 font-mono text-[12px] md:px-3 md:text-[13px]"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>

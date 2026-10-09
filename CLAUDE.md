@@ -113,8 +113,8 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ├── src/
 │   ├── assets/                   # Gambar yang dioptimasi Astro (hero, foto, sertifikat)
 │   ├── components/
-│   │   ├── astro/                # Komponen statis (.astro): Navbar, Footer, SectionHeader, ...
-│   │   └── react/                # Islands beranimasi (.tsx): Preload, HeroArt, PhotoCard, Heatmap, Marquee, ThemeToggle
+│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle (nanti: Footer, SectionHeader, ...)
+│   │   └── react/                # Islands beranimasi (.tsx): Preload, HeroArt, PhotoCard, Heatmap, Marquee
 │   ├── content/                  # Content Collections
 │   │   ├── projects/             # *.md, satu file per project
 │   │   ├── certificates/         # *.yaml, satu file per sertifikat
@@ -122,11 +122,12 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── content.config.ts         # Skema Zod untuk semua collection
 │   ├── data/
 │   │   ├── htb-activity.json     # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
-│   │   ├── profile.ts            # Nama, role, ringkasan, fokus, pendidikan, link sosial
+│   │   ├── nav.ts             ✅ # Link anchor navbar
+│   │   ├── profile.ts         ✅ # Baru nama (nanti: role, ringkasan, fokus, pendidikan, link sosial)
 │   │   └── tools.ts              # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema, skip link
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts (nanti: format tanggal, agregasi heatmap)
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts (nanti: format tanggal, agregasi heatmap)
 │   ├── pages/
 │   │   ├── index.astro        ✅ # Halaman utama (masih placeholder M0)
 │   │   └── 404.astro
@@ -169,6 +170,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ### Keamanan
 
 - Dilarang `set:html`, `dangerouslySetInnerHTML`, `eval`, `new Function`.
+- Island React pertama akan membuat Astro menyisipkan 2 script + 1 `<style>` inline (runtime hidrasi) yang diblokir CSP saat ini. Menambah hash-nya adalah perubahan CSP: **tanya dulu** (§5).
 - Tidak ada inline script kecuali script tema di `BaseLayout` (hash-nya harus diperbarui di CSP `public/_headers` setiap kali isinya berubah).
 - Tidak ada request ke domain pihak ketiga saat runtime (font, analytics, CDN).
 - Link eksternal: `target="_blank" rel="noopener noreferrer"`.
@@ -210,10 +212,10 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 
 - [x] M0 — Setup project: Astro 7 + TS strict + Tailwind v4 + React/Motion terpasang, ESLint/Prettier/Vitest, token desain, font self-host, BaseLayout dengan script tema anti-flash, `_headers` + `check:csp`. (2026-10-09)
 - [x] Deploy pertama — repo `Pariddd/portofolio` terhubung ke Cloudflare Workers (static assets), auto-deploy tiap push ke `main`; header keamanan dari `_headers` terverifikasi di situs live. (2026-10-09)
+- [x] F2 — Tema terang/gelap + Navbar: toggle di navbar (komponen Astro + script eksternal, bukan island React), ikut `prefers-color-scheme` sampai pengguna memilih, pilihan disimpan di `localStorage`. Link navbar menunjuk ke section yang belum dibuat. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] F2 — Tema terang/gelap
 - [ ] F3 — Hero (nama, role, CTA, ilustrasi)
 - [ ] F4 — Marquee tools
 - [ ] F5 — Tentang saya + kartu akses

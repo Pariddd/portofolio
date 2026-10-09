@@ -84,6 +84,13 @@
     scroll-behavior: smooth;
   }
 
+  /* Navbar sticky mulai 768 px; target anchor tidak boleh tertutup olehnya. */
+  @media (width >= 48rem) {
+    html {
+      scroll-padding-top: 88px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

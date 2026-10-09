@@ -15,5 +15,10 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Script kecil jangan di-inline ke HTML: CSP hanya mengizinkan file dari 'self'
+      // plus hash script tema.
+      assetsInlineLimit: 0,
+    },
   },
 });
