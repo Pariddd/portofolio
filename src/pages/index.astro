@@ -1,15 +1,23 @@
 ---
 import About from '../components/astro/About.astro';
+import Activity from '../components/astro/Activity.astro';
+import Certificates from '../components/astro/Certificates.astro';
 import Hero from '../components/astro/Hero.astro';
 import Marquee from '../components/astro/Marquee.astro';
 import Projects from '../components/astro/Projects.astro';
+import Preload from '../components/react/Preload';
 import { PROFILE } from '../data/profile';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const host = Astro.site?.host ?? Astro.url.host;
 ---
 
 <BaseLayout title={`${PROFILE.name} — Portofolio Keamanan Siber`} description={PROFILE.summary}>
+  <Preload client:load host={host} />
   <Hero />
   <Marquee />
   <About />
   <Projects />
+  <Activity />
+  <Certificates />
 </BaseLayout>

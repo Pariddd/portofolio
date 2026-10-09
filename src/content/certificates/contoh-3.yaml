@@ -1,0 +1,7 @@
+# DUMMY: ganti seluruh isi dengan sertifikat asli, lalu hapus `sample`.
+name: Sertifikat contoh 3
+issuer: Penerbit contoh
+credentialId: CONTOH-003
+verifyUrl: https://example.com/
+sample: true
+order: 3

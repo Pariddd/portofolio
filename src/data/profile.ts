@@ -6,6 +6,8 @@
  */
 export const PROFILE = {
   name: 'Parid',
+  /** Nama lengkap, dipakai sebagai judul hero. */
+  fullName: 'Farid Kurniawan',
   tagline: 'security researcher · Informatika, Univ. Malikussaleh',
   role: 'Security researcher & full-stack developer',
   summary: 'Web exploitation, reverse engineering, dan machine learning untuk deteksi malware.',
@@ -27,6 +29,15 @@ export const PROFILE = {
   status: null as string | null,
   accessLabel: 'ACCESS · LVL 3',
   focus: ['Web exploitation', 'Reverse engineering', 'ML untuk deteksi malware'],
+  /**
+   * DUMMY: LinkedIn dan WhatsApp belum menunjuk ke akun Parid. GitHub diambil dari
+   * pemilik remote repo. Format WhatsApp final: `https://wa.me/<nomor tanpa +>`.
+   */
+  contacts: {
+    github: 'https://github.com/Pariddd',
+    linkedin: 'https://www.linkedin.com/',
+    whatsapp: 'https://wa.me/',
+  },
   education: {
     degree: 'S1 Informatika',
     school: 'Universitas Malikussaleh',

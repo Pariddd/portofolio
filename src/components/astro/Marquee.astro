@@ -1,30 +1,32 @@
 ---
 import { TOOLS } from '../../data/tools';
+import MarqueeMotion from '../react/MarqueeMotion';
 
-// Animasi CSS murni (hanya transform), jadi tidak perlu island React.
-// Dua salinan daftar, masing-masing diakhiri jarak selebar gap, membuat
-// translateX(-50%) tepat satu putaran sehingga loop tidak melompat.
+// Digerakkan MarqueeMotion. Dua salinan daftar, masing-masing diakhiri jarak selebar
+// gap, membuat translateX(-50%) tepat satu putaran sehingga loop tidak melompat.
 const LIST_CLASS = 'flex shrink-0 gap-14 pr-14';
 ---
 
 <section
   aria-label="Tools yang dipakai"
-  class="group border-line text-faint relative overflow-hidden border-y py-[18px] font-mono text-[13px]"
+  class="border-line text-faint relative overflow-hidden border-y font-mono text-[13px]"
 >
-  <label class="bg-ink text-bg sr-only px-4 py-3 focus-within:not-sr-only focus-within:absolute focus-within:top-1 focus-within:left-2 focus-within:z-10">
-    <input type="checkbox" class="mr-2" />
-    Jeda gerakan daftar tools
-  </label>
-  <div class="animate-marquee flex w-max whitespace-nowrap group-hover:[animation-play-state:paused] group-has-checked:[animation-play-state:paused] motion-reduce:animate-none">
-    <ul class={LIST_CLASS}>
-      {TOOLS.map((tool) => (
-        <li>{tool}</li>
-      ))}
-    </ul>
-    <ul class={LIST_CLASS} aria-hidden="true">
-      {TOOLS.map((tool) => (
-        <li>{tool}</li>
-      ))}
-    </ul>
-  </div>
+  <MarqueeMotion client:idle className="py-[18px]">
+    <label class="bg-ink text-bg sr-only px-4 py-3 focus-within:not-sr-only focus-within:absolute focus-within:top-1 focus-within:left-2 focus-within:z-10">
+      <input type="checkbox" class="mr-2" />
+      Jeda gerakan daftar tools
+    </label>
+    <div data-marquee-track class="flex w-max whitespace-nowrap">
+      <ul class={LIST_CLASS}>
+        {TOOLS.map((tool) => (
+          <li>{tool}</li>
+        ))}
+      </ul>
+      <ul class={LIST_CLASS} aria-hidden="true">
+        {TOOLS.map((tool) => (
+          <li>{tool}</li>
+        ))}
+      </ul>
+    </div>
+  </MarqueeMotion>
 </section>

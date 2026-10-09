@@ -74,17 +74,20 @@
   --ease-main: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-reveal: cubic-bezier(0.7, 0, 0.2, 1);
 
-  --animate-marquee: marquee 36s linear infinite;
-
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
-  }
+  /* Semua animasi dijalankan Motion di island React. Satu-satunya animasi CSS adalah
+     jaring pengaman preload: overlay tetap hilang bila island gagal dimuat. */
+  --animate-preload-failsafe: preload-out 0.3s ease-out 6s forwards;
 
   /* Design system: sudut tegas. Hanya kotak heatmap yang 2 px. */
   --radius-*: initial;
   --radius-heat: 2px;
+}
+
+@keyframes preload-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 @layer base {
@@ -122,6 +125,14 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+}
+
+/* Preload hanya tampil bila script inline memasang `preloading` (lihat BaseLayout).
+   Di luar layer supaya menang atas utility `hidden` milik overlay. */
+@media (prefers-reduced-motion: no-preference) {
+  .preloading [data-preload] {
+    display: flex;
   }
 }
 

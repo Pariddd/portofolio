@@ -31,19 +31,19 @@ Konten ditambahkan lewat commit Git (Markdown/YAML/JSON), **bukan** lewat form u
 
 ### Tech stack
 
-| Lapisan             | Pilihan                                                                                 |
-| ------------------- | --------------------------------------------------------------------------------------- |
-| Framework           | Astro 7, `output: 'static'`                                                             |
-| Komponen interaktif | React 19 sebagai _islands_ (hanya untuk yang beranimasi/interaktif)                     |
-| Animasi             | Motion (`import { motion } from "motion/react"`) — **bukan** paket lama `framer-motion` |
-| Styling             | Tailwind CSS v4 + CSS variables untuk token tema                                        |
-| Bahasa              | TypeScript strict, dipin ke `^6` (batas `typescript-eslint` & `@astrojs/check`)         |
-| Validasi            | Zod (skema Content Collections & respons API HTB)                                       |
-| Lint/format         | ESLint 10 (+ `eslint-plugin-astro`, `eslint-plugin-jsx-a11y-x`) + Prettier              |
-| Test                | Vitest (unit), Playwright + @axe-core/playwright (smoke & a11y)                         |
-| CI/CD               | GitHub Actions (sync HTB, audit, build)                                                 |
-| Hosting             | Cloudflare Workers static assets, deploy via Git (header via `public/_headers`)         |
-| Package manager     | npm (lockfile wajib di-commit)                                                          |
+| Lapisan             | Pilihan                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Framework           | Astro 7, `output: 'static'`                                                                                                       |
+| Komponen interaktif | React 19 sebagai _islands_ (hanya untuk yang beranimasi/interaktif)                                                               |
+| Animasi             | Motion for React di island: `useAnimate` dari `motion/react-mini` (+ `useInView` dari `motion/react`) — **bukan** `framer-motion` |
+| Styling             | Tailwind CSS v4 + CSS variables untuk token tema                                                                                  |
+| Bahasa              | TypeScript strict, dipin ke `^6` (batas `typescript-eslint` & `@astrojs/check`)                                                   |
+| Validasi            | Zod (skema Content Collections & respons API HTB)                                                                                 |
+| Lint/format         | ESLint 10 (+ `eslint-plugin-astro`, `eslint-plugin-jsx-a11y-x`) + Prettier                                                        |
+| Test                | Vitest (unit), Playwright + @axe-core/playwright (smoke & a11y)                                                                   |
+| CI/CD               | GitHub Actions (sync HTB, audit, build)                                                                                           |
+| Hosting             | Cloudflare Workers static assets, deploy via Git (header via `public/_headers`)                                                   |
+| Package manager     | npm (lockfile wajib di-commit)                                                                                                    |
 
 Jangan menambah dependensi baru tanpa persetujuan (lihat §5).
 
@@ -69,7 +69,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 
 **Tipografi:** Schibsted Grotesk (judul & isi), JetBrains Mono (hanya label, metadata, angka, kode). Font **di-self-host** di `public/fonts/`, tidak memuat Google Fonts saat runtime.
 
-- H1 hero: `clamp(72px, 11vw, 168px)`, weight 800, letter-spacing −0.05em
+- H1 hero (nama lengkap, dua baris): `clamp(44px, 15vw, 112px)`, mulai `lg` `clamp(64px, 7.4vw, 96px)`, weight 800, letter-spacing −0.05em. Diperkecil dari mockup (168 px) supaya "Kurniawan." muat satu baris.
 - H2: 44 px, weight 800, letter-spacing −0.03em
 - Body: 17 px, line-height 1.6
 - Label mono: 12–13 px
@@ -81,10 +81,15 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 - Easing utama `cubic-bezier(.2,.7,.2,1)`, reveal `cubic-bezier(.7,0,.2,1)`.
 - Durasi mikro 150–250 ms, reveal 600–1100 ms.
 - Hanya animasikan `transform` dan `opacity`.
-- Reveal hanya **sekali** saat masuk viewport.
+- Reveal hanya **sekali** saat masuk viewport: judul section, teks Tentang, kartu project, baris sertifikat, dan kontak naik bertahap (`Reveal` efek `rise`). Pengecualian (permintaan Parid): garis pindai di foto Tentang berulang terus setelah tirai pembuka.
 - Kilatan/flash maksimal 3 per detik (WCAG 2.3.1).
-- **Setiap** animasi wajib menghormati `prefers-reduced-motion` (`useReducedMotion()`).
-- Parallax pakai `useMotionValue` + `useSpring`, bukan `useState` per mousemove. Nonaktif di perangkat sentuh.
+- **Setiap** animasi wajib menghormati `prefers-reduced-motion`: island memanggil `prefersReducedMotion()` (`src/lib/motion.ts`) dan tidak menganimasikan apa pun bila aktif; CSS memakai `@media`.
+- Parallax: `HeroMotion` menganimasikan `transform` tiap lapisan `data-depth` (px) mengikuti pointer, dibatasi `requestAnimationFrame`. Nonaktif di perangkat sentuh.
+- **Implementasi (keputusan Parid, 2026-10-09):** semua animasi dijalankan Motion di island React (`src/components/react/`). Markup tetap di komponen Astro dan diteruskan lewat slot; island hanya menganimasikan elemen bertanda `data-hero`, `data-depth`, `data-reveal-item`, `data-marquee-track`.
+- Pakai `useAnimate` dari `motion/react-mini` dengan nilai `transform`/`opacity` eksplisit. **Jangan** pakai komponen `<motion.*>`/`<m.*>` dengan prop `initial`: saat SSR ia menulis atribut `style=""` yang diblokir CSP, dan paket penuhnya membuat JS ±95 KB gzip (anggaran 80 KB; saat ini ±77 KB).
+- Keadaan awal tersembunyi dipasang lewat class atau CSSOM saat hidrasi, supaya tanpa JavaScript konten tetap terlihat.
+- Satu-satunya animasi CSS: `animate-preload-failsafe` (overlay preload tetap hilang setelah 6 detik bila island gagal dimuat).
+- Preload tampil di **setiap** muat halaman (permintaan Parid) dan ditutup "Selamat datang."; animasi pembuka hero menunggu event `preload:done` (`src/lib/preload.ts`). Judul hero muncul huruf demi huruf (`data-hero="char"`, `<h1>` memakai `aria-label`).
 
 ## 3. Struktur folder
 
@@ -108,29 +113,30 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── fonts/                 ✅ # Font self-host (woff2 variable, subset Latin) + lisensi OFL
 │   └── cv/                    ✅ # CV-Parid.pdf
 ├── scripts/
-│   ├── check-csp.mjs          ✅ # Cocokkan inline script/style di dist/ dengan CSP _headers
+│   ├── check-csp.mjs          ✅ # Cocokkan hash inline script dan <style> di dist/ dengan CSP _headers
 │   └── sync-htb.ts               # Ambil data HTB → src/data/htb-activity.json
 ├── src/
 │   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg (nanti: sertifikat)
 │   ├── components/
-│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard (nanti: Footer, ...)
-│   │   └── react/                # Islands beranimasi (.tsx): Preload, HeroArt, PhotoCard, Heatmap
-│   ├── content/                  # Content Collections
-│   │   ├── projects/          ✅ # *.md, satu file per project
-│   │   ├── certificates/         # *.yaml, satu file per sertifikat
+│   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Footer
+│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal
+│   ├── content/               ✅ # Content Collections
+│   │   ├── projects/          ✅ # *.md, satu file per project (URL masih dummy)
+│   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi masih contoh, `sample: true`)
 │   │   └── writeups/             # (v2, belum ditampilkan)
-│   ├── content.config.ts      ✅ # Skema Zod (baru collection projects)
+│   ├── content.config.ts      ✅ # Skema Zod: projects, certificates
 │   ├── data/
 │   │   ├── htb-activity.json     # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
+│   │   ├── htb-sample.ts      ✅ # DATA CONTOH heatmap sampai F9 ada
 │   │   ├── nav.ts             ✅ # Link anchor navbar
-│   │   ├── profile.ts         ✅ # Nama, teks hero, handle, path CV, ringkasan, fokus, pendidikan (nanti: link sosial)
+│   │   ├── profile.ts         ✅ # Nama, teks hero, handle, path CV, ringkasan, fokus, pendidikan, kontak (sebagian dummy)
 │   │   └── tools.ts           ✅ # Daftar tools untuk marquee
 │   ├── layouts/
-│   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema, skip link
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts (nanti: format tanggal, agregasi heatmap)
+│   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema + penanda preload, skip link, Navbar, Footer
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts
 │   ├── pages/
-│   │   ├── index.astro        ✅ # Halaman utama (masih placeholder M0)
-│   │   └── 404.astro
+│   │   ├── index.astro        ✅ # Halaman utama
+│   │   └── 404.astro          ✅
 │   └── styles/
 │       └── global.css         ✅ # Tailwind + token CSS variables
 ├── tests/
@@ -149,7 +155,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 
 - TypeScript strict; dilarang `any` (pakai `unknown` + narrowing). Tidak ada `@ts-ignore` tanpa komentar alasan.
 - Satu komponen per file. Nama komponen `PascalCase`, file utilitas `kebab-case.ts`, konstanta `SCREAMING_SNAKE_CASE`.
-- Default ke **komponen Astro** (tanpa JS). Pakai React island hanya bila butuh interaksi/animasi, dengan directive paling hemat: `client:visible` > `client:idle` > `client:load` (hanya hero & preload).
+- Default ke **komponen Astro** (tanpa JS). Pakai React island hanya bila butuh interaksi/animasi, dengan directive paling hemat: `client:visible` > `client:idle` > `client:load` (hanya hero & preload). Island reveal memakai `client:idle`, bukan `client:visible`, supaya keadaan tersembunyi terpasang sebelum elemen terlihat.
 - Konten (teks profil, project, sertifikat, tools) **tidak di-hard-code** di komponen; ambil dari `src/content/` atau `src/data/`.
 - Fungsi murni di `src/lib/` dan wajib punya unit test.
 - Jangan tinggalkan `console.log`, kode mati, atau TODO tanpa konteks.
@@ -170,8 +176,9 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ### Keamanan
 
 - Dilarang `set:html`, `dangerouslySetInnerHTML`, `eval`, `new Function`.
-- Island React pertama akan membuat Astro menyisipkan 2 script + 1 `<style>` inline (runtime hidrasi) yang diblokir CSP saat ini. Menambah hash-nya adalah perubahan CSP: **tanya dulu** (§5).
-- Tidak ada inline script kecuali script tema di `BaseLayout` (hash-nya harus diperbarui di CSP `public/_headers` setiap kali isinya berubah).
+- CSP `public/_headers` memuat hash untuk: script `<head>` BaseLayout, tiga script hidrasi island Astro (`astro-island`, `client:load`, `client:idle`), dan satu `<style>` Astro. Hash hidrasi berubah bila Astro di-upgrade atau directive `client:*` baru dipakai: jalankan `npm run build && npm run check:csp -- --print` lalu perbarui. Menambah sumber atau `unsafe-*` tetap **tanya dulu** (§5).
+- Tidak ada inline script buatan sendiri kecuali script di `<head>` `BaseLayout` (tema + penanda preload; hash-nya harus diperbarui di CSP setiap kali isinya berubah).
+- Mengubah gaya dari script hanya lewat CSSOM atau Motion; atribut `style=""` di HTML (termasuk prop `style` React yang ikut ter-SSR) diblokir CSP.
 - Tidak ada request ke domain pihak ketiga saat runtime (font, analytics, CDN).
 - Link eksternal: `target="_blank" rel="noopener noreferrer"`.
 - Secret (mis. `HTB_API_TOKEN`) **hanya** di GitHub Secrets dan hanya dipakai di `scripts/`. Jangan pernah masuk ke `src/`, ke `PUBLIC_*` env, atau ke log.
@@ -182,7 +189,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ### Performa
 
 - Gambar lewat `<Image>`/`<Picture>` Astro (AVIF/WebP), sertakan `width`/`height`. Hero: `loading="eager"` + `fetchpriority="high"`; lainnya lazy.
-- Target: Lighthouse ≥ 95, JS halaman < 80 KB gzip.
+- Target: Lighthouse ≥ 95. JS halaman ±80 KB gzip adalah patokan, bukan batas keras: boleh dilampaui bila hasilnya lebih baik (keputusan Parid, 2026-10-09); sebutkan ukurannya di ringkasan.
 
 ### Git
 
@@ -213,21 +220,27 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] M0 — Setup project: Astro 7 + TS strict + Tailwind v4 + React/Motion terpasang, ESLint/Prettier/Vitest, token desain, font self-host, BaseLayout dengan script tema anti-flash, `_headers` + `check:csp`. (2026-10-09)
 - [x] Deploy pertama — repo `Pariddd/portofolio` terhubung ke Cloudflare Workers (static assets), auto-deploy tiap push ke `main`; header keamanan dari `_headers` terverifikasi di situs live. (2026-10-09)
 - [x] F2 — Tema terang/gelap + Navbar: toggle di navbar (komponen Astro + script eksternal, bukan island React), ikut `prefers-color-scheme` sampai pengguna memilih, pilihan disimpan di `localStorage`. Link navbar menunjuk ke section yang belum dibuat. (2026-10-09)
-- [x] F3 — Hero statis mengikuti artboard FINAL: tagline, nama, role, ringkasan, CTA project + CV, panel gambar miring dengan bingkai dan cincin. Gambar `src/assets/hero.jpg` **sementara** (674 px, persegi, masih berlatar); lencana `handle` tampil setelah `PROFILE.handle` diisi. (2026-10-09)
-- [x] F4 — Marquee tools: animasi CSS murni (bukan island React), berhenti saat hover, mati saat `prefers-reduced-motion`, plus kotak centang "jeda" yang muncul saat difokus keyboard. (2026-10-09)
+- [x] F3 — Hero mengikuti artboard FINAL: tagline, nama lengkap `PROFILE.fullName` ("Farid Kurniawan", dua baris), role, ringkasan, CTA project + CV, panel gambar miring dengan bingkai dan cincin. Gambar `src/assets/hero.jpg` **sementara** (674 px, persegi, masih berlatar); lencana `handle` tampil setelah `PROFILE.handle` diisi. (2026-10-09)
+- [x] F4 — Marquee tools: digerakkan island `MarqueeMotion`, berhenti saat hover, diam saat `prefers-reduced-motion`, plus kotak centang "jeda" yang muncul saat difokus keyboard. (2026-10-09)
 - [x] F5 — Tentang saya + kartu akses (statis): foto `src/assets/photo.jpg` (dipotong 4:5, hitam-putih sampai kartu di-hover), `about` teks sementara, `status`/`handle`/tahun masuk disembunyikan sampai diisi di `profile.ts`. (2026-10-09)
-- [x] F6 — Project pilihan: Content Collection `projects` (skema Zod di `src/content.config.ts`), dua project dari mockup. Kartu tanpa `url` tidak menjadi link; project ketiga dan semua URL belum ada. (2026-10-09)
+- [x] F6 — Project pilihan: Content Collection `projects` (skema Zod di `src/content.config.ts`), dua project dari mockup. Kartu tanpa `url` tidak menjadi link; project ketiga belum ada, URL masih dummy. (2026-10-09)
+- [x] F1 — Preload TLS handshake: island `Preload`, ±2,3 detik, tampil di setiap muat halaman dan ditutup "Selamat datang.", tombol lewati, tidak tampil tanpa JavaScript atau saat reduced motion. (2026-10-09)
+- [x] Animasi hero (island `HeroMotion`): kilatan pembuka, panel gambar naik, teks naik bertahap, busur listrik, cincin berputar, parallax pointer. "Kilau mata" tidak ada di artboard FINAL dan tidak dibuat. (2026-10-09)
+- [x] Animasi scan reveal foto (island `Reveal`): tirai membuka sekali saat masuk viewport, lalu garis pindai berulang tiap 4 detik; kartu Tentang tidak lagi punya efek hover. (2026-10-09)
+- [x] Section Aktivitas dengan heatmap **data contoh** berlabel, reveal bertahap per kolom. (2026-10-09)
+- [x] F8 — Section Sertifikat dari Content Collection `certificates`; isi masih **contoh** dan berlabel "data contoh". (2026-10-09)
+- [x] F10 (sebagian) — Footer/kontak; LinkedIn & WhatsApp masih dummy, `security.txt` belum ada. (2026-10-09)
+- [x] F12 — Halaman 404. (2026-10-09)
+- [x] Migrasi semua animasi dari CSS ke Motion di island React (pilihan Parid): CSP ditambah 3 hash script hidrasi + 1 hash `<style>`, `check:csp` memeriksa keduanya, JS halaman ±77 KB gzip. (2026-10-09)
+- [x] Animasi teks: judul hero per huruf; reveal `rise` untuk judul section, teks Tentang, kartu project, sertifikat, dan kontak. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] F8 — Sertifikat dengan link verifikasi
-- [ ] F10 — Footer, `security.txt`
-- [ ] F12 — Halaman 404
-- [ ] F1 — Preload TLS handshake
-- [ ] Animasi hero (pembuka, parallax, busur listrik, kilau mata)
-- [ ] Animasi scan reveal foto
+- [ ] Ganti semua data dummy: URL project, tiga sertifikat contoh, LinkedIn & WhatsApp, ringkasan `about`, gambar hero
+- [ ] `security.txt` (butuh kontak asli), favicon
+- [ ] Atur `not_found_handling` di Cloudflare supaya `404.html` dipakai
 - [ ] F9 — Sync HTB via GitHub Actions
-- [ ] F7 — Heatmap HTB dari data nyata
+- [ ] F7 — Heatmap HTB dari data nyata (ganti `htb-sample.ts`)
 - [ ] F11 — SEO & meta
 - [ ] Hardening: CSP final, Playwright + axe, audit
 

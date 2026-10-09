@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Halaman tidak ditemukan"
+  description="Halaman yang Anda cari tidak ada di situs ini."
+>
+  <section class="container-page flex min-h-[60svh] flex-col justify-center gap-5 py-16">
+    <p class="text-accent font-mono text-[13px]">// 404 · connection refused</p>
+    <h1 class="text-[clamp(44px,8vw,96px)] leading-[0.95] tracking-[-0.04em]">
+      Halaman tidak ditemukan.
+    </h1>
+    <p class="text-muted max-w-[460px]">
+      Alamat ini tidak menjawab. Mungkin tautannya salah ketik atau halamannya sudah dipindah.
+    </p>
+    <div>
+      <a
+        href="/"
+        class="border-ink bg-ink text-bg hover:border-accent hover:bg-accent inline-flex min-h-12 items-center border px-[22px] text-[15px] font-semibold"
+      >
+        Kembali ke beranda
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,4 +1,6 @@
 ---
+import Reveal from '../react/Reveal';
+
 interface Props {
   /** Nomor section dua digit, mis. "01". */
   number: string;
@@ -10,9 +12,11 @@ interface Props {
 const { number, title, id } = Astro.props;
 ---
 
-<div class="flex items-baseline gap-4">
-  <span class="text-accent font-mono text-[13px]" aria-hidden="true">
+<Reveal client:idle effect="rise" className="flex items-baseline gap-4">
+  <span data-reveal-item class="text-accent font-mono text-[13px]" aria-hidden="true">
     {number}
   </span>
-  <h2 id={id}>{title}</h2>
-</div>
+  <h2 data-reveal-item id={id}>
+    {title}
+  </h2>
+</Reveal>

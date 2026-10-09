@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { Picture } from 'astro:assets';
 import heroArt from '../../assets/hero.jpg';
 import { PROFILE } from '../../data/profile';
+import HeroMotion from '../react/HeroMotion';
 
 // Tombol CV tidak dirender selama PDF-nya belum di-commit, supaya tidak ada link mati.
 const hasCv = existsSync(join(process.cwd(), 'public', PROFILE.cvPath));
@@ -11,69 +12,143 @@ const hasCv = existsSync(join(process.cwd(), 'public', PROFILE.cvPath));
 const BUTTON_CLASS = 'inline-flex min-h-12 items-center border px-[22px] text-[15px] font-semibold';
 // Panel miring dari mockup: sisi kiri atas turun 6%.
 const PANEL_CLIP = '[clip-path:polygon(0_6%,100%_0,100%_100%,0_100%)]';
+// Animasi (kilatan, panel, teks naik, busur, cincin, parallax) dijalankan HeroMotion
+// lewat penanda `data-hero` dan `data-depth`.
+// Judul dipecah per huruf untuk animasi; tiap kata satu baris, titik aksen di akhir.
+const nameWords = PROFILE.fullName.split(' ');
+const nameLines = nameWords.map((word, index) => [
+  ...[...word].map((char) => ({ char, accent: false })),
+  ...(index === nameWords.length - 1 ? [{ char: '.', accent: true }] : []),
+]);
+const ARC_CLASS =
+  'text-accent-hi pointer-events-none absolute hidden overflow-visible opacity-0 md:block';
 ---
 
-<section
-  id="top"
-  class="container-page grid items-center gap-12 pt-6 pb-16 md:pt-10 md:pb-26 lg:grid-cols-2 lg:gap-14"
->
-  <div class="flex flex-col gap-[22px]">
-    <p class="text-accent font-mono text-[13px]">{`// ${PROFILE.tagline}`}</p>
-    <h1 class="after:text-accent text-[clamp(72px,11vw,168px)] leading-[0.88] tracking-[-0.05em] after:content-['.']">
-      {PROFILE.name}
-    </h1>
-    <p class="text-[22px] leading-[1.3] font-semibold tracking-[-0.01em]">{PROFILE.role}</p>
-    <p class="text-muted max-w-[460px]">{PROFILE.summary}</p>
-    <div class="flex flex-wrap gap-3">
-      <a
-        href="#project"
-        class:list={[BUTTON_CLASS, 'border-ink bg-ink text-bg hover:border-accent hover:bg-accent']}
-      >
-        Lihat project
-      </a>
-      {hasCv && (
-        <a
-          href={PROFILE.cvPath}
-          download
-          class:list={[BUTTON_CLASS, 'border-ink text-ink hover:border-accent hover:text-accent']}
-        >
-          Unduh CV
-        </a>
-      )}
-    </div>
-  </div>
+<HeroMotion client:load className="relative overflow-x-clip">
+  <div
+    data-hero="strike"
+    class="bg-accent-hi pointer-events-none absolute inset-0 z-10 opacity-0 mix-blend-screen"
+    aria-hidden="true"
+  ></div>
 
-  <div class="relative mx-auto flex w-full max-w-[520px] items-center justify-center md:py-8">
+  <section
+    id="top"
+    class="container-page grid items-center gap-12 pt-6 pb-16 md:pt-10 md:pb-26 lg:grid-cols-2 lg:gap-14"
+  >
+    <div class="flex flex-col gap-[22px]">
+      <p data-hero="rise" class="text-accent font-mono text-[13px]">
+        {`// ${PROFILE.tagline}`}
+      </p>
+      <h1
+        aria-label={`${PROFILE.fullName}.`}
+        class="text-[clamp(44px,15vw,112px)] leading-[0.92] tracking-[-0.05em] lg:text-[clamp(64px,7.4vw,96px)]"
+      >
+        {nameLines.map((line) => (
+          <span class="block whitespace-nowrap" aria-hidden="true">
+            {line.map(({ char, accent }) => (
+              <span data-hero="char" class:list={['inline-block', accent && 'text-accent']}>
+                {char}
+              </span>
+            ))}
+          </span>
+        ))}
+      </h1>
+      <p data-hero="rise" class="text-[22px] leading-[1.3] font-semibold tracking-[-0.01em]">
+        {PROFILE.role}
+      </p>
+      <p data-hero="rise" class="text-muted max-w-[460px]">
+        {PROFILE.summary}
+      </p>
+      <div data-hero="rise" class="flex flex-wrap gap-3">
+        <a
+          href="#project"
+          class:list={[
+            BUTTON_CLASS,
+            'border-ink bg-ink text-bg hover:border-accent hover:bg-accent',
+          ]}
+        >
+          Lihat project
+        </a>
+        {hasCv && (
+          <a
+            href={PROFILE.cvPath}
+            download
+            class:list={[BUTTON_CLASS, 'border-ink text-ink hover:border-accent hover:text-accent']}
+          >
+            Unduh CV
+          </a>
+        )}
+      </div>
+    </div>
+
     <div
-      class="border-line absolute hidden aspect-square w-full rounded-full border border-dashed md:block"
-      aria-hidden="true"
-    ></div>
-    <div class="relative aspect-[44/50] w-[calc(100%-28px)] max-w-[440px]">
+      data-parallax
+      class="relative mx-auto flex w-full max-w-[520px] items-center justify-center md:py-8"
+    >
       <div
-        class:list={[
-          'border-ink dark:border-accent absolute top-3.5 -right-3.5 -bottom-3.5 left-3.5 border',
-          PANEL_CLIP,
-        ]}
+        data-hero="ring"
+        class="border-line absolute hidden aspect-square w-full rounded-full border border-dashed md:block"
         aria-hidden="true"
       ></div>
-      <div class:list={['bg-line absolute inset-0 overflow-hidden', PANEL_CLIP]}>
-        <Picture
-          src={heroArt}
-          alt={PROFILE.heroArtAlt}
-          formats={['avif', 'webp']}
-          widths={[360, heroArt.width]}
-          sizes="(min-width: 500px) 440px, calc(100vw - 60px)"
-          loading="eager"
-          fetchpriority="high"
-          class="size-full object-cover"
-        />
+      <div data-depth="5.6" class="relative aspect-[44/50] w-[calc(100%-28px)] max-w-[440px]">
+        <div
+          class:list={[
+            'border-ink dark:border-accent absolute top-3.5 -right-3.5 -bottom-3.5 left-3.5 border',
+            PANEL_CLIP,
+          ]}
+          aria-hidden="true"
+        ></div>
+        <div class:list={['absolute inset-0 overflow-hidden', PANEL_CLIP]}>
+          <div data-hero="panel" class="bg-line size-full">
+            <Picture
+              src={heroArt}
+              alt={PROFILE.heroArtAlt}
+              formats={['avif', 'webp']}
+              widths={[360, heroArt.width]}
+              sizes="(min-width: 500px) 440px, calc(100vw - 60px)"
+              loading="eager"
+              fetchpriority="high"
+              data-depth="9.6"
+              class="size-full scale-[1.06] object-cover"
+            />
+          </div>
+        </div>
+        <svg
+          viewBox="0 0 140 180"
+          fill="none"
+          stroke="currentColor"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          data-hero="arc"
+          data-depth="20.8"
+          class:list={[ARC_CLASS, 'top-10 -left-9 h-[180px] w-[140px]']}
+        >
+          <polyline points="130,0 92,46 112,58 60,110 82,118 20,180" stroke-width="3"></polyline>
+          <polyline points="92,46 70,40 54,64" stroke-width="1.5"></polyline>
+        </svg>
+        <svg
+          viewBox="0 0 130 170"
+          fill="none"
+          stroke="currentColor"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          data-hero="arc"
+          data-depth="20.8"
+          class:list={[ARC_CLASS, '-right-10 bottom-[70px] h-[170px] w-[130px]']}
+        >
+          <polyline points="0,0 44,40 26,56 84,96 62,108 126,170" stroke-width="3"></polyline>
+          <polyline points="84,96 104,84 118,100" stroke-width="1.5"></polyline>
+        </svg>
+        {PROFILE.handle !== null && (
+          <dl
+            data-hero="rise"
+            class="border-line bg-panel absolute bottom-7 -left-2 border px-3.5 py-2.5 font-mono text-[12px] md:-left-7"
+          >
+            <dt class="text-faint">handle</dt>
+            <dd class="font-medium">{PROFILE.handle}</dd>
+          </dl>
+        )}
       </div>
-      {PROFILE.handle !== null && (
-        <dl class="border-line bg-panel absolute bottom-7 -left-2 border px-3.5 py-2.5 font-mono text-[12px] md:-left-7">
-          <dt class="text-faint">handle</dt>
-          <dd class="font-medium">{PROFILE.handle}</dd>
-        </dl>
-      )}
     </div>
-  </div>
-</section>
+  </section>
+</HeroMotion>

@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import photo from '../../assets/photo.jpg';
 import { PROFILE } from '../../data/profile';
+import Reveal from '../react/Reveal';
 import SectionHeader from './SectionHeader.astro';
 
 const { education } = PROFILE;
@@ -17,8 +18,9 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
     <SectionHeader number="01" title="Tentang saya" id="judul-tentang" />
   </div>
 
-  <div class="group border-line bg-panel hover:border-accent ease-main w-full max-w-[380px] self-start border p-5 transition-transform duration-[400ms] hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:col-span-5 lg:col-span-4">
-    <div class="bg-line aspect-[4/5] overflow-hidden">
+  <div class="border-line bg-panel w-full max-w-[380px] self-start border p-5 md:col-span-5 lg:col-span-4">
+    {/* Scan reveal: tirai turun sekali saat foto masuk viewport (lihat Reveal.tsx). */}
+    <Reveal client:idle effect="scan" className="bg-line relative aspect-[4/5] overflow-hidden">
       <Picture
         src={photo}
         alt={PROFILE.photoAlt}
@@ -26,9 +28,19 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
         sizes="(min-width: 1024px) 317px, (min-width: 768px) 30vw, 340px"
         widths={[320, photo.width]}
         loading="lazy"
-        class="size-full object-cover grayscale group-hover:grayscale-0"
+        class="size-full object-cover"
       />
-    </div>
+      <div
+        data-reveal-item
+        class="border-accent bg-panel absolute inset-0 [transform:translateY(101%)] border-t-2"
+        aria-hidden="true"
+      ></div>
+      <div
+        data-reveal-loop
+        class="border-accent-hi pointer-events-none absolute inset-0 border-t-2 opacity-0"
+        aria-hidden="true"
+      ></div>
+    </Reveal>
     <div class="text-faint mt-4 flex justify-between gap-4 font-mono text-[12px]">
       <span>{PROFILE.accessLabel}</span>
       {PROFILE.handle !== null && <span>{PROFILE.handle}</span>}
@@ -40,9 +52,11 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
     </p>
   </div>
 
-  <div class="flex flex-col gap-10 md:col-span-7 lg:col-span-8">
-    <p class="text-[20px] leading-[1.5] tracking-[-0.01em] md:text-[22px]">{PROFILE.about}</p>
-    <dl class="border-ink grid border-t sm:grid-cols-2">
+  <Reveal client:idle effect="rise" className="flex flex-col gap-10 md:col-span-7 lg:col-span-8">
+    <p data-reveal-item class="text-[20px] leading-[1.5] tracking-[-0.01em] md:text-[22px]">
+      {PROFILE.about}
+    </p>
+    <dl data-reveal-item class="border-ink grid border-t sm:grid-cols-2">
       <div class="border-line border-b py-5 sm:pr-5">
         <dt class={LABEL_CLASS}>FOKUS</dt>
         {PROFILE.focus.map((item) => (
@@ -58,5 +72,5 @@ const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
         </dd>
       </div>
     </dl>
-  </div>
+  </Reveal>
 </section>

@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import Reveal from '../react/Reveal';
+import SectionHeader from './SectionHeader.astro';
+
+const certificates = (await getCollection('certificates')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const hasSample = certificates.some((certificate) => certificate.data.sample);
+---
+
+<section id="sertifikat" aria-labelledby="judul-sertifikat" class="container-page">
+  <div class="border-line border-t py-16 md:py-26">
+    <div class="flex flex-wrap items-baseline justify-between gap-4">
+      <SectionHeader number="04" title="Sertifikat" id="judul-sertifikat" />
+      {hasSample && <p class="text-faint font-mono text-[13px]">data contoh</p>}
+    </div>
+
+    <Reveal client:idle effect="rise" className="mt-10">
+      <ul class="border-ink border-t">
+        {certificates.map(({ data }) => (
+          <li
+            data-reveal-item
+            class="border-line grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] items-center gap-x-4 gap-y-1 border-b py-5"
+          >
+            <span class="font-semibold">{data.name}</span>
+            <span class="text-muted text-[15px]">{data.issuer}</span>
+            <span class="text-faint font-mono text-[12px]">ID {data.credentialId}</span>
+            <a
+              href={data.verifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-accent hover:text-ink inline-flex min-h-11 items-center text-[14px] underline underline-offset-4 lg:justify-self-end"
+            >
+              Verifikasi<span class="sr-only"> {data.name} (tab baru)</span>
+              <span class="ml-1" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Reveal>
+  </div>
+</section>

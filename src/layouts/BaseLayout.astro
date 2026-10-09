@@ -1,4 +1,5 @@
 ---
+import Footer from '../components/astro/Footer.astro';
 import Navbar from '../components/astro/Navbar.astro';
 import '../styles/global.css';
 
@@ -7,9 +8,10 @@ interface Props {
   description: string;
 }
 
-// Script tema di <head> adalah satu-satunya inline script yang diizinkan. Jika isinya
-// berubah: `npm run build && npm run check:csp -- --print`, lalu perbarui hash di
-// public/_headers.
+// Script di <head> adalah satu-satunya inline script yang diizinkan: ia harus jalan
+// sebelum paint untuk memasang tema dan menandai bahwa preload tampil (hanya bila JavaScript jalan).
+// Jika isinya berubah: `npm run build && npm run check:csp -- --print`, lalu perbarui
+// hash di public/_headers.
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -31,6 +33,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     />
     <script is:inline>
       (() => {
+        const root = document.documentElement;
         let stored = null;
         try {
           stored = localStorage.getItem('theme');
@@ -40,7 +43,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         const dark =
           stored === 'dark' ||
           (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', dark);
+        root.classList.toggle('dark', dark);
+        root.classList.add('preloading');
       })();
     </script>
   </head>
@@ -55,5 +59,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <main id="konten">
       <slot />
     </main>
+    <Footer />
   </body>
 </html>
