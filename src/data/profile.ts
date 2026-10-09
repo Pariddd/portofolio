@@ -38,6 +38,15 @@ export const PROFILE = {
     linkedin: 'https://www.linkedin.com/',
     whatsapp: 'https://wa.me/',
   },
+  /**
+   * ID publik profil Hack The Box (bukan rahasia), dipakai scripts/sync-htb.ts.
+   * `profileId` dari alamat profile.hackthebox.com, `accountId` dari respons profilnya.
+   */
+  htb: {
+    profileId: '019cdaa1-ae1d-71b7-bea9-76db22ff1812',
+    accountId: 'a1456507-bda2-4cb1-b7ab-935be5a899cc',
+    profileUrl: 'https://profile.hackthebox.com/profile/019cdaa1-ae1d-71b7-bea9-76db22ff1812',
+  },
   education: {
     degree: 'S1 Informatika',
     school: 'Universitas Malikussaleh',

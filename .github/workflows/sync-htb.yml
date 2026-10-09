@@ -1,0 +1,48 @@
+name: Sync HTB
+
+# Sekali sehari, sesaat setelah tengah malam WIB (00.10 WIB = 17.10 UTC), supaya XP
+# hari yang baru lewat tercatat utuh. Bisa juga dijalankan manual.
+on:
+  schedule:
+    - cron: '10 17 * * *'
+  workflow_dispatch:
+
+# Hanya butuh menulis isi repo (commit file data). Tidak memakai secret.
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-htb
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Pasang Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Pasang dependensi
+        run: npm ci --ignore-scripts
+
+      - name: Ambil data HTB
+        run: npm run sync:htb
+
+      - name: Commit bila data berubah
+        run: |
+          if git diff --quiet -- src/data/htb-activity.json; then
+            echo "Tidak ada perubahan."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/htb-activity.json
+          git commit -m "chore: sync HTB"
+          git push

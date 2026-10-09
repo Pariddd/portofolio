@@ -1,14 +1,41 @@
 ---
-import { HTB_SAMPLE_COUNTS } from '../../data/htb-sample';
+import rawData from '../../data/htb-activity.json';
+import { PROFILE } from '../../data/profile';
 import { heatLevel, toWeeks, type HeatLevel } from '../../lib/heatmap';
+import { dailyCounts, parseHtbData } from '../../lib/htb';
+import CountUp from '../react/CountUp';
 import Reveal from '../react/Reveal';
 import SectionHeader from './SectionHeader.astro';
 
-// Sampai sync HTB (F9) ada, heatmap memakai data contoh dan diberi label demikian.
-const counts = HTB_SAMPLE_COUNTS;
+// Data ditulis scripts/sync-htb.ts (GitHub Actions, sekali sehari). File yang rusak
+// dibaca sebagai data kosong, jadi build tidak gagal.
+const { syncedAt, trackingSince, stats, days } = parseHtbData(rawData);
+const counts = dailyCounts(days, new Date());
 const max = Math.max(...counts);
-const weeks = toWeeks(counts.map((count) => heatLevel(count, max)));
-const total = counts.reduce((sum, count) => sum + count, 0);
+const weeks = toWeeks(counts.map((value) => heatLevel(value, max)));
+const periodXp = counts.reduce((sum, value) => sum + value, 0);
+
+const NUMBER = new Intl.NumberFormat('id-ID');
+const DATE = new Intl.DateTimeFormat('id-ID', { dateStyle: 'long', timeZone: 'Asia/Jakarta' });
+const syncLabel =
+  syncedAt === null ? 'belum tersinkron' : `diperbarui ${DATE.format(new Date(syncedAt))}`;
+const sinceLabel =
+  trackingSince === null ? null : DATE.format(new Date(`${trackingSince}T00:00:00+07:00`));
+
+const STATS = [
+  { label: 'LEVEL', value: stats.level, note: stats.levelTitle },
+  {
+    label: 'TOTAL XP',
+    value: stats.totalXp,
+    note: `${NUMBER.format(stats.xpToNextLevel)} XP lagi`,
+  },
+  { label: 'STREAK', value: stats.streak, note: `terpanjang ${NUMBER.format(stats.maxStreak)}` },
+  {
+    label: 'MODUL ACADEMY',
+    value: stats.academyModules,
+    note: `${NUMBER.format(stats.academyBadges)} badge`,
+  },
+];
 
 const LEVEL_CLASS: Record<HeatLevel, string> = {
   0: 'bg-heat-0',
@@ -25,12 +52,31 @@ const CELL_CLASS = 'rounded-heat size-3';
   <div class="border-line border-t py-16 md:py-26">
     <div class="flex flex-wrap items-baseline justify-between gap-4">
       <SectionHeader number="03" title="Aktivitas Hack The Box" id="judul-aktivitas" />
-      <p class="text-faint font-mono text-[13px]">data contoh · belum tersinkron</p>
+      <p class="text-faint font-mono text-[13px]">{syncLabel}</p>
     </div>
+
+    <CountUp client:idle className="mt-7">
+      <dl class="border-ink grid grid-cols-2 border-t lg:grid-cols-4">
+        {STATS.map((stat) => (
+          <div class="border-line flex flex-col-reverse gap-1 border-b py-5 pr-4">
+            <dt class="text-faint font-mono text-[12px]">{stat.label}</dt>
+            <dd>
+              <span
+                data-count-to={stat.value}
+                class="block text-[40px] leading-none font-extrabold tracking-[-0.03em] md:text-[52px]"
+              >
+                {NUMBER.format(stat.value)}
+              </span>
+              <span class="text-muted text-[14px]">{stat.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </CountUp>
 
     <div class="border-line bg-panel mt-7 border p-4 md:p-6">
       <p class="sr-only">
-        Heatmap contoh: {total} aktivitas dalam {weeks.length} minggu. Data nyata menyusul.
+        Heatmap: {NUMBER.format(periodXp)} XP dalam {weeks.length} minggu terakhir.
       </p>
       {/* Bisa difokus supaya pengguna keyboard dapat menggulir heatmap di layar sempit. */}
       <div
@@ -51,12 +97,12 @@ const CELL_CLASS = 'rounded-heat size-3';
           </div>
         </Reveal>
       </div>
-      <div
-        class="text-faint mt-4 flex flex-wrap justify-between gap-3 font-mono text-[12px]"
-        aria-hidden="true"
-      >
-        <span>{total} aktivitas contoh · 12 bulan</span>
-        <span class="flex items-center gap-[5px]">
+      <div class="text-faint mt-4 flex flex-wrap justify-between gap-3 font-mono text-[12px]">
+        <span>
+          {NUMBER.format(periodXp)} XP · 12 bulan
+          {sinceLabel !== null && ` · dicatat harian sejak ${sinceLabel}`}
+        </span>
+        <span class="flex items-center gap-[5px]" aria-hidden="true">
           sedikit
           {LEVELS.map((level) => (
             <span class:list={[CELL_CLASS, LEVEL_CLASS[level]]} />
@@ -65,5 +111,17 @@ const CELL_CLASS = 'rounded-heat size-3';
         </span>
       </div>
     </div>
+
+    <a
+      href={PROFILE.htb.profileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-accent hover:text-ink mt-4 inline-flex min-h-11 items-center text-[14px] underline underline-offset-4"
+    >
+      Lihat profil Hack The Box<span class="sr-only"> (tab baru)</span>
+      <span class="ml-1" aria-hidden="true">
+        &nearr;
+      </span>
+    </a>
   </div>
 </section>

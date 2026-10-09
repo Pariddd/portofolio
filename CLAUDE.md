@@ -115,26 +115,25 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   └── certificates/          ✅ # PDF sertifikat (saat ini contoh.pdf)
 ├── scripts/
 │   ├── check-csp.mjs          ✅ # Cocokkan hash inline script dan <style> di dist/ dengan CSP _headers
-│   └── sync-htb.ts               # Ambil data HTB → src/data/htb-activity.json
+│   └── sync-htb.ts            ✅ # Ambil progres HTB (endpoint publik, tanpa token) → src/data/htb-activity.json; `npm run sync:htb`
 ├── src/
 │   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg, projects/ (screenshot), certificates/ (gambar sertifikat); isi dua folder terakhir masih contoh
 │   ├── components/
 │   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Dialog, Footer
-│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs
+│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs, CountUp
 │   ├── content/               ✅ # Content Collections
 │   │   ├── projects/          ✅ # *.md, satu file per project; isi Markdown = penjelasan di pop-up (URL, screenshot, penjelasan masih dummy)
 │   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi, gambar, dan PDF masih contoh, `sample: true`)
 │   │   └── writeups/             # (v2, belum ditampilkan)
 │   ├── content.config.ts      ✅ # Skema Zod: projects, certificates
 │   ├── data/
-│   │   ├── htb-activity.json     # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
-│   │   ├── htb-sample.ts      ✅ # DATA CONTOH heatmap sampai F9 ada
+│   │   ├── htb-activity.json  ✅ # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
 │   │   ├── nav.ts             ✅ # Link anchor navbar
 │   │   ├── profile.ts         ✅ # Nama, teks hero, handle, path CV, ringkasan, fokus, pendidikan, kontak (sebagian dummy)
 │   │   └── tools.ts           ✅ # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema + penanda preload, skip link, Navbar, Footer
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts
 │   ├── pages/
 │   │   ├── index.astro        ✅ # Halaman utama
 │   │   └── 404.astro          ✅
@@ -147,7 +146,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
     ├── dependabot.yml
     └── workflows/
         ├── ci.yml                # lint, typecheck, test, audit, build di setiap PR
-        └── sync-htb.yml          # cron tiap 6 jam + workflow_dispatch
+        └── sync-htb.yml       ✅ # cron sekali sehari (00.10 WIB) + workflow_dispatch
 ```
 
 ## 4. Aturan coding
@@ -228,7 +227,8 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F1 — Preload TLS handshake: island `Preload`, ±2,3 detik, tampil di setiap muat halaman dan ditutup "Selamat datang.", tombol lewati, tidak tampil tanpa JavaScript atau saat reduced motion. (2026-10-09)
 - [x] Animasi hero (island `HeroMotion`): kilatan pembuka, panel gambar naik, teks naik bertahap, busur listrik, cincin berputar, parallax pointer. "Kilau mata" tidak ada di artboard FINAL dan tidak dibuat. (2026-10-09)
 - [x] Animasi scan reveal foto (island `Reveal`): tirai membuka sekali saat masuk viewport, lalu garis pindai berulang tiap 4 detik; kartu Tentang tidak lagi punya efek hover. (2026-10-09)
-- [x] Section Aktivitas dengan heatmap **data contoh** berlabel, reveal bertahap per kolom. (2026-10-09)
+- [x] F9 — Sync HTB: `scripts/sync-htb.ts` + workflow `sync-htb.yml` sekali sehari (permintaan Parid), **tanpa token** (endpoint publik profil HTB, tidak resmi/terdokumentasi; respons divalidasi Zod, bila gagal data lama dibiarkan). (2026-10-09)
+- [x] F7 — Section Aktivitas dari data nyata: baris statistik (level, total XP, streak, modul Academy) dengan angka menghitung naik, dan heatmap harian. HTB tidak membuka aktivitas harian, jadi riwayat dibangun dari selisih total XP antar-sync, mulai 2026-10-09; hari sebelum itu kosong. (2026-10-09)
 - [x] F8 — Section Sertifikat dari Content Collection `certificates`; isi masih **contoh** dan berlabel "data contoh". (2026-10-09)
 - [x] F10 (sebagian) — Footer/kontak; LinkedIn & WhatsApp masih dummy, `security.txt` belum ada. (2026-10-09)
 - [x] F12 — Halaman 404. (2026-10-09)
@@ -241,8 +241,6 @@ Rencana (lihat `docs/PRD.md` §12):
 - [ ] Ganti semua data dummy: URL repo, penjelasan dan screenshot project, tiga sertifikat contoh (isi, gambar, PDF), LinkedIn & WhatsApp, ringkasan `about`, gambar hero
 - [ ] `security.txt` (butuh kontak asli), favicon
 - [ ] Atur `not_found_handling` di Cloudflare supaya `404.html` dipakai
-- [ ] F9 — Sync HTB via GitHub Actions
-- [ ] F7 — Heatmap HTB dari data nyata (ganti `htb-sample.ts`)
 - [ ] F11 — SEO & meta
 - [ ] Hardening: CSP final, Playwright + axe, audit
 

@@ -35,7 +35,7 @@ Situs portofolio pribadi **statis (tanpa backend)** untuk menampilkan identitas,
 
 - Backend, database, login, atau form upload di web. Konten ditambah lewat commit Git.
 - Blog/writeup (ditunda; struktur folder disiapkan tapi tidak ditampilkan di v1).
-- Statistik HTB rank, jumlah mesin, publikasi, CTF sebagai baris angka (sengaja dihapus dari desain).
+- Statistik publikasi dan CTF sebagai baris angka. (Statistik HTB — level, XP, streak, modul Academy — dimasukkan kembali atas permintaan Parid, 2026-10-09; lihat F7.)
 - Multi-bahasa (v1 hanya Bahasa Indonesia; label teknis boleh berbahasa Inggris).
 - Komentar, analytics pihak ketiga, cookie.
 
@@ -131,13 +131,13 @@ Urutan section final:
 
 ### F9 — Sinkronisasi HTB (GitHub Actions)
 
-- Workflow `sync-htb.yml` berjalan via cron (tiap 6 jam) + `workflow_dispatch`.
-- Script Node (`scripts/sync-htb.ts`) memanggil API HTB v4 dengan token dari **GitHub Secrets** (`HTB_API_TOKEN`).
-- Agregasi aktivitas (own/flag/challenge) per tanggal (zona waktu Asia/Jakarta), **merge** dengan data lama (tidak menimpa riwayat), simpan ke `src/data/htb-activity.json`.
+- Workflow `sync-htb.yml` berjalan via cron sekali sehari (00.10 WIB) + `workflow_dispatch`.
+- Script Node (`scripts/sync-htb.ts`) memanggil endpoint **publik** profil HTB (level/XP/streak dan badge Academy). Tidak memakai token atau secret.
+- HTB tidak membuka aktivitas harian. Riwayat dibangun sendiri: selisih total XP sejak sync sebelumnya dicatat per tanggal (zona waktu Asia/Jakarta), **merge** dengan data lama (tidak menimpa riwayat), simpan ke `src/data/htb-activity.json`.
 - Commit hanya jika ada perubahan; commit memicu deploy.
-- Ketahanan: timeout, retry dengan backoff (maks 3), validasi respons dengan Zod. Jika API gagal → workflow gagal dengan pesan jelas, data lama tetap utuh.
-- **Token tidak pernah masuk ke bundle frontend atau log.**
-- ⚠️ Risiko: API HTB v4 tidak terdokumentasi resmi dan endpoint activity mungkin hanya mengembalikan aktivitas terbaru. Riwayat lengkap terbentuk bertahap dari sync berkala. Endpoint perlu diverifikasi sebelum implementasi (lihat §13).
+- Ketahanan: timeout, validasi respons dengan Zod. Jika API gagal → workflow gagal dengan pesan jelas, data lama tetap utuh.
+- Tidak ada token; ID profil yang dipakai bersifat publik.
+- ⚠️ Risiko: endpoint ini tidak terdokumentasi resmi dan bisa berubah. Bila satu sync terlewat, XP beberapa hari tercatat pada satu hari.
 
 ### F10 — Footer & berkas keamanan
 
