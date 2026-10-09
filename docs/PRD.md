@@ -253,7 +253,7 @@ Alternatif yang dipertimbangkan: Next.js static export (lebih berat, fitur serve
 
 ### Keputusan (2026-10-09)
 
-- **Domain:** dummy dulu → `parid-portfolio.pages.dev` (subdomain bawaan Cloudflare Pages). Simpan di satu konstanta `SITE_URL` (`astro.config.mjs` → `site`) agar mudah diganti saat domain asli ada.
+- **Domain:** dummy dulu → `faridkurniawan.pages.dev` (subdomain bawaan Cloudflare Pages). Simpan di satu konstanta `SITE_URL` (`astro.config.mjs` → `site`) agar mudah diganti saat domain asli ada.
 - **Kontak:** GitHub, LinkedIn, WhatsApp. WhatsApp via link `https://wa.me/<nomor>` (nomor di `src/data/profile.ts`). Tanpa email publik dan tanpa PGP di v1; `security.txt` memakai link kontak yang tersedia.
 - **CV:** PDF Bahasa Indonesia di `public/cv/CV-Parid.pdf`.
 - **Gambar hero:** ilustrasi orisinal milik Parid (menggantikan gambar sementara dari situs gratis).

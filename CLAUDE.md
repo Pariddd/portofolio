@@ -22,7 +22,7 @@ Konten ditambahkan lewat commit Git (Markdown/YAML/JSON), **bukan** lewat form u
 
 **Keputusan yang sudah tetap:**
 
-- Domain sementara: `parid-portfolio.pages.dev` — hanya didefinisikan sekali di `astro.config.mjs` (`site`), jangan di-hard-code di tempat lain.
+- Domain sementara: `faridkurniawan.pages.dev` — hanya didefinisikan sekali di `astro.config.mjs` (`site`), jangan di-hard-code di tempat lain.
 - Kontak: GitHub, LinkedIn, WhatsApp (`https://wa.me/<nomor>`), data di `src/data/profile.ts`. Tidak ada email publik dan PGP di v1.
 - CV: PDF Bahasa Indonesia di `public/cv/CV-Parid.pdf`.
 - Bahasa UI: Indonesia (`lang="id"`).
