@@ -109,7 +109,8 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ├── public/
 │   ├── _headers               ✅ # Header keamanan Cloudflare (CSP, HSTS, dll.)
 │   ├── .well-known/security.txt  # RFC 9116
-│   ├── robots.txt
+│   ├── favicon.svg / favicon.ico / apple-touch-icon.png ✅ # Ikon situs: monogram "F" + titik aksen
+│   ├── og.png                 ✅ # Gambar pratinjau link (1200 × 630)
 │   ├── fonts/                 ✅ # Font self-host (woff2 variable, subset Latin) + lisensi OFL
 │   ├── cv/                    ✅ # CV-Parid.pdf
 │   └── certificates/          ✅ # PDF sertifikat (saat ini contoh.pdf)
@@ -133,9 +134,11 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   │   └── tools.ts           ✅ # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema + penanda preload, skip link, Navbar, Footer
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts, nav.ts, tooltip.ts
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts, nav.ts, tooltip.ts, sitemap.ts
 │   ├── pages/
 │   │   ├── index.astro        ✅ # Halaman utama
+│   │   ├── robots.txt.ts      ✅ # robots.txt, alamat sitemap mengikuti `site`
+│   │   ├── sitemap.xml.ts     ✅ # Sitemap tanpa dependensi (lihat src/lib/sitemap.ts)
 │   │   └── 404.astro          ✅
 │   └── styles/
 │       └── global.css         ✅ # Tailwind + token CSS variables
@@ -143,9 +146,9 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── unit/                  ✅ # Vitest
 │   └── e2e/                      # Playwright + axe
 └── .github/
-    ├── dependabot.yml
+    ├── dependabot.yml         ✅ # npm + github-actions, mingguan
     └── workflows/
-        ├── ci.yml                # lint, typecheck, test, audit, build di setiap PR
+        ├── ci.yml             ✅ # audit, lint, typecheck, test, build, check:csp di setiap push ke main dan PR
         └── sync-htb.yml       ✅ # cron sekali sehari (00.10 WIB) + workflow_dispatch
 ```
 
@@ -238,13 +241,15 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] Kartu project menampilkan thumbnail (screenshot pertama). (2026-10-09)
 - [x] Tooltip heatmap (island `Tooltip`, untuk elemen `data-tip`): tanggal dan XP per kotak saat ditunjuk atau diketuk. (2026-10-09)
 - [x] Navbar sticky dengan penanda section aktif, dan tombol "ke atas" (island `BackToTop`) yang muncul setelah menggulir 600 px. (2026-10-09)
+- [x] F11 — SEO & meta: Open Graph + Twitter card dengan `og.png` (tangkapan layar hero mode terang; ganti filenya bila hero berubah), `theme-color`, sitemap dan robots.txt (endpoint statis, tanpa dependensi baru), 404 diberi `noindex`. Judul halaman memakai `PROFILE.fullName`. (2026-10-09)
+- [x] Favicon custom (SVG + ICO + apple-touch-icon). Gambar dibuat ulang dengan script sekali pakai bila desainnya berubah. (2026-10-09)
+- [x] CI (`ci.yml`) dan Dependabot. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
 - [ ] Ganti semua data dummy: URL repo, penjelasan dan screenshot project, tiga sertifikat contoh (isi, gambar, PDF), LinkedIn & WhatsApp, ringkasan `about`, gambar hero
-- [ ] `security.txt` (butuh kontak asli), favicon
+- [ ] `security.txt` (butuh kontak asli)
 - [ ] Atur `not_found_handling` di Cloudflare supaya `404.html` dipakai
-- [ ] F11 — SEO & meta
 - [ ] Hardening: CSP final, Playwright + axe, audit
 
 ## Referensi desain

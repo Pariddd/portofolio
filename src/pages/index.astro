@@ -12,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const host = Astro.site?.host ?? Astro.url.host;
 ---
 
-<BaseLayout title={`${PROFILE.name} — Portofolio Keamanan Siber`} description={PROFILE.summary}>
+<BaseLayout title={`${PROFILE.fullName} — Portofolio Keamanan Siber`} description={PROFILE.summary}>
   <Preload client:load host={host} />
   <Hero />
   <Marquee />
