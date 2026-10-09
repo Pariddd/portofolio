@@ -9,6 +9,13 @@ updates:
       # Pembaruan minor dan patch digabung jadi satu PR supaya tidak menumpuk.
       minor-dan-patch:
         update-types: [minor, patch]
+    ignore:
+      # TypeScript dipin ke ^6 (batas typescript-eslint dan @astrojs/check).
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      # Mengikuti versi Node yang dipakai (22).
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /

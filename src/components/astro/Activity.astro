@@ -54,6 +54,9 @@ const LEVEL_CLASS: Record<HeatLevel, string> = {
 };
 const LEVELS: readonly HeatLevel[] = [0, 1, 2, 3, 4];
 const CELL_CLASS = 'rounded-heat size-3';
+// Wadah yang bisa digulir harus bisa difokus keyboard (WCAG 2.1.1). Ditulis sebagai
+// ekspresi karena aturan lint `no-noninteractive-tabindex` hanya menerima bentuk itu.
+const SCROLLABLE_TABINDEX = 0;
 ---
 
 <section id="aktivitas" aria-labelledby="judul-aktivitas" class="container-page">
@@ -90,7 +93,7 @@ const CELL_CLASS = 'rounded-heat size-3';
       <div
         role="group"
         aria-label="Heatmap aktivitas, dapat digulir mendatar"
-        tabindex="0"
+        tabindex={SCROLLABLE_TABINDEX}
         class="overflow-x-auto pb-1"
       >
         <Reveal client:idle effect="cells" className="w-max">

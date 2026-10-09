@@ -17,6 +17,9 @@ const projects = await Promise.all(
   })),
 );
 
+// Wadah yang bisa digulir harus bisa difokus keyboard (WCAG 2.1.1). Ditulis sebagai
+// ekspresi karena aturan lint `no-noninteractive-tabindex` hanya menerima bentuk itu.
+const SCROLLABLE_TABINDEX = 0;
 const ARROW_CLASS =
   'border-line hover:border-accent hover:text-accent disabled:text-faint disabled:hover:border-line inline-flex size-11 items-center justify-center border disabled:cursor-not-allowed disabled:opacity-50';
 const ARROW_ICON = {
@@ -53,7 +56,7 @@ const ARROW_ICON = {
             <Gallery client:idle className="relative">
               <ul
                 data-gallery-track
-                tabindex="0"
+                tabindex={SCROLLABLE_TABINDEX}
                 aria-label={`Tangkapan layar ${data.title}, dapat digeser`}
                 class="border-line flex snap-x snap-mandatory overflow-x-auto border [scrollbar-width:none]"
               >
