@@ -84,7 +84,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 - Reveal hanya **sekali** saat masuk viewport: judul section, teks Tentang, kartu project, baris sertifikat, dan kontak naik bertahap (`Reveal` efek `rise`). Pengecualian (permintaan Parid): garis pindai di foto Tentang berulang terus setelah tirai pembuka.
 - Kilatan/flash maksimal 3 per detik (WCAG 2.3.1).
 - **Setiap** animasi wajib menghormati `prefers-reduced-motion`: island memanggil `prefersReducedMotion()` (`src/lib/motion.ts`) dan tidak menganimasikan apa pun bila aktif; CSS memakai `@media`.
-- Parallax: `HeroMotion` menganimasikan `transform` tiap lapisan `data-depth` (px) mengikuti pointer, dibatasi `requestAnimationFrame`. Nonaktif di perangkat sentuh.
+- Parallax: `HeroMotion` meneruskan posisi pointer ke dua pegas Motion (`springValue`) dan menulis `transform` tiap lapisan `data-depth` (px) saat pegas bergerak. Jangan memanggil `animate()` di tiap `pointermove`: itu membuat gerakan tersendat. Nonaktif di perangkat sentuh.
 - **Implementasi (keputusan Parid, 2026-10-09):** semua animasi dijalankan Motion di island React (`src/components/react/`). Markup tetap di komponen Astro dan diteruskan lewat slot; island hanya menganimasikan elemen bertanda `data-hero`, `data-depth`, `data-reveal-item`, `data-marquee-track`.
 - Pakai `useAnimate` dari `motion/react-mini` dengan nilai `transform`/`opacity` eksplisit. **Jangan** pakai komponen `<motion.*>`/`<m.*>` dengan prop `initial`: saat SSR ia menulis atribut `style=""` yang diblokir CSP, dan paket penuhnya membuat JS ±95 KB gzip (anggaran 80 KB; saat ini ±77 KB).
 - Keadaan awal tersembunyi dipasang lewat class atau CSSOM saat hidrasi, supaya tanpa JavaScript konten tetap terlihat.

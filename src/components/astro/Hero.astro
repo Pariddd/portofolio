@@ -96,7 +96,10 @@ const ARC_CLASS =
         class="border-accent/55 dark:border-accent/45 absolute hidden aspect-square w-full rounded-full border-2 border-dashed md:block"
         aria-hidden="true"
       ></div>
-      <div data-depth="5.6" class="relative aspect-[44/50] w-[calc(100%-28px)] max-w-[440px]">
+      <div
+        data-depth="5.6"
+        class="relative aspect-[44/50] will-change-transform w-[calc(100%-28px)] max-w-[440px]"
+      >
         <div
           class:list={[
             'border-ink dark:border-accent absolute top-3.5 -right-3.5 -bottom-3.5 left-3.5 border',
@@ -115,7 +118,7 @@ const ARC_CLASS =
               loading="eager"
               fetchpriority="high"
               data-depth="9.6"
-              class="size-full scale-[1.06] object-cover"
+              class="size-full scale-[1.06] object-cover will-change-transform"
             />
           </div>
         </div>

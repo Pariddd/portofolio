@@ -1,3 +1,4 @@
+import { motionValue, springValue } from 'motion';
 import { useAnimate } from 'motion/react-mini';
 import { useEffect, type ReactNode } from 'react';
 import {
@@ -16,6 +17,8 @@ interface Props {
 }
 
 // Jeda (detik) dihitung dari saat preload mulai memudar.
+// Pegas parallax: cukup teredam supaya tidak memantul, cukup lentur supaya terasa ringan.
+const PARALLAX_SPRING = { stiffness: 90, damping: 18, mass: 0.6 };
 const STRIKE_DELAY = 0.15;
 const PANEL_DELAY = 0.35;
 const RISE_DELAYS = [1, 1.5, 1.6, 1.7, 1.8];
@@ -108,33 +111,36 @@ export default function HeroMotion({ className, children }: Props) {
       window.addEventListener(PRELOAD_DONE_EVENT, playIntro, { once: true });
     }
 
-    // Parallax hanya untuk pointer presisi (mouse).
+    // Parallax hanya untuk pointer presisi (mouse). Posisi pointer diteruskan ke dua
+    // pegas, dan lapisan digambar ulang tiap pegas bergerak. Dengan begitu gerakan
+    // tetap halus walau pointer bergerak cepat atau tiba-tiba keluar dari area.
     const area = root.querySelector<HTMLElement>('[data-parallax]');
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    let frame = 0;
-    const moveLayers = (x: number, y: number) => {
-      for (const layer of root.querySelectorAll<HTMLElement>('[data-depth]')) {
-        animate(
-          layer,
-          { transform: parallaxTransform(x, y, Number(layer.dataset['depth'])) },
-          { duration: 0.4, ease: EASE_MAIN },
-        );
+    const layers = [...root.querySelectorAll<HTMLElement>('[data-depth]')].map((element) => ({
+      element,
+      depth: Number(element.dataset['depth']),
+    }));
+    const targetX = motionValue(0);
+    const targetY = motionValue(0);
+    const x = springValue(targetX, PARALLAX_SPRING);
+    const y = springValue(targetY, PARALLAX_SPRING);
+    const render = () => {
+      for (const { element, depth } of layers) {
+        element.style.transform = parallaxTransform(x.get(), y.get(), depth);
       }
     };
+    const stopX = x.on('change', render);
+    const stopY = y.on('change', render);
+
     const onMove = (event: PointerEvent) => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        if (area === null) return;
-        const rect = area.getBoundingClientRect();
-        moveLayers(
-          pointerOffset(event.clientX, rect.left, rect.width),
-          pointerOffset(event.clientY, rect.top, rect.height),
-        );
-      });
+      if (area === null) return;
+      const rect = area.getBoundingClientRect();
+      targetX.set(pointerOffset(event.clientX, rect.left, rect.width));
+      targetY.set(pointerOffset(event.clientY, rect.top, rect.height));
     };
     const onLeave = () => {
-      cancelAnimationFrame(frame);
-      moveLayers(0, 0);
+      targetX.set(0);
+      targetY.set(0);
     };
     if (area !== null && finePointer) {
       area.addEventListener('pointermove', onMove);
@@ -143,7 +149,10 @@ export default function HeroMotion({ className, children }: Props) {
 
     return () => {
       window.removeEventListener(PRELOAD_DONE_EVENT, playIntro);
-      cancelAnimationFrame(frame);
+      stopX();
+      stopY();
+      x.destroy();
+      y.destroy();
       area?.removeEventListener('pointermove', onMove);
       area?.removeEventListener('pointerleave', onLeave);
     };
