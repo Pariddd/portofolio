@@ -129,14 +129,20 @@ export function applySync(
   };
 }
 
+export interface DayEntry {
+  /** Tanggal WIB `YYYY-MM-DD`. */
+  day: string;
+  xp: number;
+}
+
 /** Deret XP harian sepanjang `length` hari yang berakhir di tanggal WIB `today`. */
-export function dailyCounts(
+export function dailySeries(
   days: Readonly<Record<string, number>>,
   today: Date,
   length = HEATMAP_DAYS,
-): number[] {
+): DayEntry[] {
   return Array.from({ length }, (_, index) => {
-    const date = new Date(today.getTime() - (length - 1 - index) * DAY_MS);
-    return days[jakartaDay(date)] ?? 0;
+    const day = jakartaDay(new Date(today.getTime() - (length - 1 - index) * DAY_MS));
+    return { day, xp: days[day] ?? 0 };
   });
 }

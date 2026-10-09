@@ -120,7 +120,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg, projects/ (screenshot), certificates/ (gambar sertifikat); isi dua folder terakhir masih contoh
 │   ├── components/
 │   │   ├── astro/             ✅ # Markup: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard, Activity, Certificates, Dialog, Footer
-│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs, CountUp
+│   │   └── react/             ✅ # Island Motion: Preload, HeroMotion, MarqueeMotion, Reveal, Dialogs, Gallery, CountUp, Tooltip, BackToTop
 │   ├── content/               ✅ # Content Collections
 │   │   ├── projects/          ✅ # *.md, satu file per project; isi Markdown = penjelasan di pop-up (URL, screenshot, penjelasan masih dummy)
 │   │   ├── certificates/      ✅ # *.yaml, satu file per sertifikat (isi, gambar, dan PDF masih contoh, `sample: true`)
@@ -133,7 +133,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   │   └── tools.ts           ✅ # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema + penanda preload, skip link, Navbar, Footer
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts, nav.ts, tooltip.ts
 │   ├── pages/
 │   │   ├── index.astro        ✅ # Halaman utama
 │   │   └── 404.astro          ✅
@@ -234,7 +234,10 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F12 — Halaman 404. (2026-10-09)
 - [x] Migrasi semua animasi dari CSS ke Motion di island React (pilihan Parid): CSP ditambah 3 hash script hidrasi + 1 hash `<style>`, `check:csp` memeriksa keduanya, JS halaman ±77 KB gzip. (2026-10-09)
 - [x] Animasi teks: judul hero per huruf dengan titik aksen berdenyut; reveal `rise` untuk judul section, teks Tentang, kartu project, sertifikat, dan kontak. (2026-10-09)
-- [x] Pop-up detail (`Dialog.astro` + island `Dialogs`, elemen `<dialog>` bawaan): project menampilkan penjelasan, screenshot, stack, dan tombol "Buka repo"; sertifikat menampilkan gambar, tombol "Buka PDF" dan "Verifikasi". PDF tidak ditanam dalam frame (`frame-ancestors 'none'` tetap). Gambar, PDF, penjelasan, dan URL masih **contoh**. (2026-10-09)
+- [x] Pop-up detail (`Dialog.astro` + island `Dialogs`, elemen `<dialog>` bawaan): project menampilkan penjelasan, galeri screenshot geser (island `Gallery`, scroll-snap + tombol panah), stack, dan tombol "Buka repo"; sertifikat menampilkan gambar, tombol "Buka PDF" dan "Verifikasi". PDF tidak ditanam dalam frame (`frame-ancestors 'none'` tetap). Gambar, PDF, penjelasan, dan URL masih **contoh**. (2026-10-09)
+- [x] Kartu project menampilkan thumbnail (screenshot pertama). (2026-10-09)
+- [x] Tooltip heatmap (island `Tooltip`, untuk elemen `data-tip`): tanggal dan XP per kotak saat ditunjuk atau diketuk. (2026-10-09)
+- [x] Navbar sticky dengan penanda section aktif, dan tombol "ke atas" (island `BackToTop`) yang muncul setelah menggulir 600 px. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
@@ -250,7 +253,7 @@ Mockup ada di canvas Claude Design "Portofolio Parid". Satu-satunya artboard acu
 
 Catatan dari artboard FINAL yang tidak tertulis di bagian lain:
 
-- Navbar tidak sticky dan tanpa garis bawah; link 15 px (bukan mono); tombol tema berlabel mono 12 px.
+- Navbar **sticky** (permintaan Parid, menggantikan "tidak sticky" di artboard): latar `--bg` solid tanpa blur, garis bawah muncul setelah halaman digulir, link section yang sedang dilihat ditandai `aria-current` (warna aksen + garis bawah). Link 15 px (bukan mono); tombol tema berlabel mono 12 px.
 - Hero: panel gambar miring `polygon(0 6%, 100% 0, 100% 100%, 0 100%)` + bingkai offset 14 px, cincin putus-putus 2 px berwarna aksen (transparan) berbentuk lingkaran di belakangnya (satu-satunya pengecualian radius selain heatmap), lencana `handle`.
 - CTA utama: latar `--ink`, teks `--bg`, 15 px weight 600.
 - Footer/kontak diberi nomor `05` ("Mari ngobrol.").

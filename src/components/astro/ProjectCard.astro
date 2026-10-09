@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -8,29 +9,44 @@ interface Props {
 }
 
 const { project, dialogId } = Astro.props;
+const thumbnail = project.screenshots[0];
 ---
 
-<article class="border-line bg-panel hover:border-accent ease-main relative flex h-full min-h-[280px] flex-col gap-3.5 border p-7 transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-  <p class="text-faint flex justify-between gap-4 font-mono text-[12px]">
-    <span>{project.category}</span>
-    <span class="text-accent">{project.topic}</span>
-  </p>
-  <h3 class="text-[24px] leading-[1.2] font-bold tracking-[-0.02em]">
-    {/* `after:inset-0` membuat seluruh kartu bisa diklik. */}
-    <button
-      type="button"
-      data-dialog-open={dialogId}
-      aria-haspopup="dialog"
-      class="text-left after:absolute after:inset-0"
-    >
-      {project.title}
-    </button>
-  </h3>
-  <p class="text-muted text-[15px]">{project.summary}</p>
-  <p class="text-faint mt-auto flex justify-between gap-4 font-mono text-[12px]">
-    <span>{project.stack.join(' · ')}</span>
-    <span class="text-accent" aria-hidden="true">
-      lihat detail +
-    </span>
-  </p>
+<article class="border-line bg-panel hover:border-accent ease-main relative flex h-full flex-col border transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+  {/* Dekoratif: judul kartu sudah menjelaskan isinya, gambar lengkap ada di pop-up. */}
+  {thumbnail !== undefined && (
+    <Picture
+      src={thumbnail}
+      alt=""
+      formats={['avif', 'webp']}
+      widths={[480, 800]}
+      sizes="(min-width: 1024px) 380px, (min-width: 700px) 50vw, calc(100vw - 34px)"
+      loading="lazy"
+      class="border-line aspect-[16/10] w-full border-b object-cover"
+    />
+  )}
+  <div class="flex min-h-[220px] grow flex-col gap-3.5 p-7">
+    <p class="text-faint flex justify-between gap-4 font-mono text-[12px]">
+      <span>{project.category}</span>
+      <span class="text-accent">{project.topic}</span>
+    </p>
+    <h3 class="text-[24px] leading-[1.2] font-bold tracking-[-0.02em]">
+      {/* `after:inset-0` membuat seluruh kartu bisa diklik. */}
+      <button
+        type="button"
+        data-dialog-open={dialogId}
+        aria-haspopup="dialog"
+        class="text-left after:absolute after:inset-0"
+      >
+        {project.title}
+      </button>
+    </h3>
+    <p class="text-muted text-[15px]">{project.summary}</p>
+    <p class="text-faint mt-auto flex justify-between gap-4 font-mono text-[12px]">
+      <span>{project.stack.join(' · ')}</span>
+      <span class="text-accent" aria-hidden="true">
+        lihat detail +
+      </span>
+    </p>
+  </div>
 </article>

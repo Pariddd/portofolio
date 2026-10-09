@@ -122,6 +122,19 @@
     font-size: 44px;
   }
 
+  /* Navbar sticky: target link anchor berhenti di bawahnya. */
+  section[id],
+  footer[id] {
+    scroll-margin-top: 104px;
+  }
+
+  @media (width >= 48rem) {
+    section[id],
+    footer[id] {
+      scroll-margin-top: 76px;
+    }
+  }
+
   /* Halaman di belakang pop-up tidak ikut tergulir. */
   html:has(dialog[open]) {
     overflow: hidden;

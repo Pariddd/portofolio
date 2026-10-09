@@ -3,7 +3,7 @@ import {
   EMPTY_HTB_DATA,
   MODULE_BADGE_CATEGORY,
   applySync,
-  dailyCounts,
+  dailySeries,
   jakartaDay,
   parseHtbData,
   type AcademyBadges,
@@ -92,10 +92,15 @@ describe('applySync', () => {
   });
 });
 
-describe('dailyCounts', () => {
+describe('dailySeries', () => {
   it('berakhir di hari ini dan mengisi hari kosong dengan nol', () => {
     const today = new Date('2026-10-10T05:00:00Z');
-    expect(dailyCounts({ '2026-10-10': 7, '2026-10-08': 3 }, today, 4)).toEqual([0, 3, 0, 7]);
+    expect(dailySeries({ '2026-10-10': 7, '2026-10-08': 3 }, today, 4)).toEqual([
+      { day: '2026-10-07', xp: 0 },
+      { day: '2026-10-08', xp: 3 },
+      { day: '2026-10-09', xp: 0 },
+      { day: '2026-10-10', xp: 7 },
+    ]);
   });
 });
 

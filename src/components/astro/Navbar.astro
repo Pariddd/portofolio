@@ -4,8 +4,11 @@ import { PROFILE } from '../../data/profile';
 import ThemeToggle from './ThemeToggle.astro';
 ---
 
-<header>
-  <div class="container-page flex flex-wrap items-center justify-between gap-x-7 py-3 md:py-6">
+<header
+  data-navbar
+  class="bg-bg data-scrolled:border-line sticky top-0 z-30 border-b border-transparent"
+>
+  <div class="container-page flex flex-wrap items-center justify-between gap-x-7 py-1.5 md:py-4">
     <a
       href="/"
       class="after:text-accent inline-flex min-h-11 items-center text-[18px] font-extrabold after:content-['.']"
@@ -18,7 +21,8 @@ import ThemeToggle from './ThemeToggle.astro';
           <li>
             <a
               href={link.href}
-              class="hover:text-accent inline-flex min-h-11 items-center px-2.5 text-[15px]"
+              data-nav-link
+              class="hover:text-accent aria-[current]:text-accent inline-flex min-h-11 items-center px-2.5 text-[15px] aria-[current]:font-semibold aria-[current]:underline aria-[current]:underline-offset-8"
             >
               {link.label}
             </a>
@@ -29,3 +33,41 @@ import ThemeToggle from './ThemeToggle.astro';
     <ThemeToggle />
   </div>
 </header>
+
+<script>
+  import { activeSection, sectionIdFromHref } from '../../lib/nav';
+
+  // Garis bawah navbar muncul setelah halaman digulir; link section yang sedang dilihat
+  // ditandai `aria-current`. Section dianggap aktif saat bagian atasnya melewati
+  // sepertiga atas layar.
+  const header = document.querySelector<HTMLElement>('[data-navbar]');
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
+  const sections = links.flatMap((link) => {
+    const id = sectionIdFromHref(link.getAttribute('href') ?? '');
+    const element = id === null ? null : document.getElementById(id);
+    return id === null || element === null ? [] : [{ id, element, link }];
+  });
+
+  let frame = 0;
+  const update = () => {
+    header?.toggleAttribute('data-scrolled', window.scrollY > 8);
+    const active = activeSection(
+      sections.map(({ id, element }) => ({ id, top: element.getBoundingClientRect().top })),
+      window.innerHeight / 3,
+    );
+    for (const { id, link } of sections) {
+      if (id === active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    },
+    { passive: true },
+  );
+  update();
+</script>

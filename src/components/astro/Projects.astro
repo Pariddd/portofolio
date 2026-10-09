@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Dialogs from '../react/Dialogs';
+import Gallery from '../react/Gallery';
 import Reveal from '../react/Reveal';
 import Dialog from './Dialog.astro';
 import ProjectCard from './ProjectCard.astro';
@@ -15,6 +16,18 @@ const projects = await Promise.all(
     Content: (await render(entry)).Content,
   })),
 );
+
+const ARROW_CLASS =
+  'border-line hover:border-accent hover:text-accent disabled:text-faint disabled:hover:border-line inline-flex size-11 items-center justify-center border disabled:cursor-not-allowed disabled:opacity-50';
+const ARROW_ICON = {
+  width: 18,
+  height: 18,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  'stroke-width': 2,
+  'aria-hidden': 'true',
+} as const;
 ---
 
 <section id="project" aria-labelledby="judul-project" class="container-page">
@@ -36,17 +49,59 @@ const projects = await Promise.all(
           <div class="text-muted flex flex-col gap-3">
             <Content />
           </div>
-          {data.screenshots.map((screenshot, index) => (
-            <Picture
-              src={screenshot}
-              alt={`Tangkapan layar ${data.title} (${index + 1} dari ${data.screenshots.length})`}
-              formats={['avif', 'webp']}
-              widths={[640, 1280]}
-              sizes="(min-width: 960px) 854px, calc(100vw - 74px)"
-              loading="lazy"
-              class="border-line h-auto w-full border"
-            />
-          ))}
+          {data.screenshots.length > 0 && (
+            <Gallery client:idle className="relative">
+              <ul
+                data-gallery-track
+                tabindex="0"
+                aria-label={`Tangkapan layar ${data.title}, dapat digeser`}
+                class="border-line flex snap-x snap-mandatory overflow-x-auto border [scrollbar-width:none]"
+              >
+                {data.screenshots.map((screenshot, index) => (
+                  <li class="w-full shrink-0 snap-center">
+                    <Picture
+                      src={screenshot}
+                      alt={`Tangkapan layar ${data.title} (${index + 1} dari ${data.screenshots.length})`}
+                      formats={['avif', 'webp']}
+                      widths={[640, 1280]}
+                      sizes="(min-width: 960px) 854px, calc(100vw - 74px)"
+                      loading="lazy"
+                      class="h-auto w-full"
+                    />
+                  </li>
+                ))}
+              </ul>
+              {data.screenshots.length > 1 && (
+                <div class="mt-3 flex items-center justify-between gap-4">
+                  <p data-gallery-count class="text-faint font-mono text-[12px]">
+                    1 / {data.screenshots.length}
+                  </p>
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      data-gallery-prev
+                      aria-label="Gambar sebelumnya"
+                      class={ARROW_CLASS}
+                    >
+                      <svg {...ARROW_ICON}>
+                        <path d="M15 5l-7 7 7 7" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      data-gallery-next
+                      aria-label="Gambar berikutnya"
+                      class={ARROW_CLASS}
+                    >
+                      <svg {...ARROW_ICON}>
+                        <path d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </Gallery>
+          )}
           <div class="flex flex-wrap items-center justify-between gap-4">
             <p class="text-faint font-mono text-[12px]">{data.stack.join(' · ')}</p>
             {data.url !== undefined && (

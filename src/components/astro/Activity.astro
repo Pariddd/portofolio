@@ -2,20 +2,28 @@
 import rawData from '../../data/htb-activity.json';
 import { PROFILE } from '../../data/profile';
 import { heatLevel, toWeeks, type HeatLevel } from '../../lib/heatmap';
-import { dailyCounts, parseHtbData } from '../../lib/htb';
+import { dailySeries, parseHtbData } from '../../lib/htb';
 import CountUp from '../react/CountUp';
 import Reveal from '../react/Reveal';
+import Tooltip from '../react/Tooltip';
 import SectionHeader from './SectionHeader.astro';
 
 // Data ditulis scripts/sync-htb.ts (GitHub Actions, sekali sehari). File yang rusak
 // dibaca sebagai data kosong, jadi build tidak gagal.
 const { syncedAt, trackingSince, stats, days } = parseHtbData(rawData);
-const counts = dailyCounts(days, new Date());
-const max = Math.max(...counts);
-const weeks = toWeeks(counts.map((value) => heatLevel(value, max)));
-const periodXp = counts.reduce((sum, value) => sum + value, 0);
-
 const NUMBER = new Intl.NumberFormat('id-ID');
+const DAY = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeZone: 'Asia/Jakarta' });
+
+const series = dailySeries(days, new Date());
+const max = Math.max(...series.map((entry) => entry.xp));
+const periodXp = series.reduce((sum, entry) => sum + entry.xp, 0);
+// Tiap kotak membawa teks tooltip: tanggal dan XP hari itu.
+const weeks = toWeeks(
+  series.map(({ day, xp }) => ({
+    level: heatLevel(xp, max),
+    tip: `${DAY.format(new Date(`${day}T00:00:00+07:00`))} · ${NUMBER.format(xp)} XP`,
+  })),
+);
 const DATE = new Intl.DateTimeFormat('id-ID', { dateStyle: 'long', timeZone: 'Asia/Jakarta' });
 const syncLabel =
   syncedAt === null ? 'belum tersinkron' : `diperbarui ${DATE.format(new Date(syncedAt))}`;
@@ -89,14 +97,15 @@ const CELL_CLASS = 'rounded-heat size-3';
           <div class="flex gap-[3px]" aria-hidden="true">
             {weeks.map((week) => (
               <div data-reveal-item class="flex flex-col gap-[3px]">
-                {week.map((level) => (
-                  <span class:list={[CELL_CLASS, LEVEL_CLASS[level]]} />
+                {week.map(({ level, tip }) => (
+                  <span data-tip={tip} class:list={[CELL_CLASS, LEVEL_CLASS[level]]} />
                 ))}
               </div>
             ))}
           </div>
         </Reveal>
       </div>
+      <Tooltip client:idle />
       <div class="text-faint mt-4 flex flex-wrap justify-between gap-3 font-mono text-[12px]">
         <span>
           {NUMBER.format(periodXp)} XP · 12 bulan
