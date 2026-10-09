@@ -1,9 +1,13 @@
 ---
+import About from '../components/astro/About.astro';
 import Hero from '../components/astro/Hero.astro';
+import Marquee from '../components/astro/Marquee.astro';
 import { PROFILE } from '../data/profile';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title={`${PROFILE.name} — Portofolio Keamanan Siber`} description={PROFILE.summary}>
   <Hero />
+  <Marquee />
+  <About />
 </BaseLayout>

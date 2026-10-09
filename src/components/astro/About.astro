@@ -1,0 +1,62 @@
+---
+import { Picture } from 'astro:assets';
+import photo from '../../assets/photo.jpg';
+import { PROFILE } from '../../data/profile';
+import SectionHeader from './SectionHeader.astro';
+
+const { education } = PROFILE;
+const LABEL_CLASS = 'text-faint mb-2 font-mono text-[12px]';
+---
+
+<section
+  id="tentang"
+  aria-labelledby="judul-tentang"
+  class="container-page grid gap-8 py-16 md:grid-cols-12 md:py-26"
+>
+  <div class="md:col-span-12">
+    <SectionHeader number="01" title="Tentang saya" id="judul-tentang" />
+  </div>
+
+  <div class="group border-line bg-panel hover:border-accent ease-main w-full max-w-[380px] self-start border p-5 transition-transform duration-[400ms] hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:col-span-5 lg:col-span-4">
+    <div class="bg-line aspect-[4/5] overflow-hidden">
+      <Picture
+        src={photo}
+        alt={PROFILE.photoAlt}
+        formats={['avif', 'webp']}
+        sizes="(min-width: 1024px) 317px, (min-width: 768px) 30vw, 340px"
+        widths={[320, photo.width]}
+        loading="lazy"
+        class="size-full object-cover grayscale group-hover:grayscale-0"
+      />
+    </div>
+    <div class="text-faint mt-4 flex justify-between gap-4 font-mono text-[12px]">
+      <span>{PROFILE.accessLabel}</span>
+      {PROFILE.handle !== null && <span>{PROFILE.handle}</span>}
+    </div>
+    <p class="mt-1 text-[22px] leading-[1.3] font-extrabold">{PROFILE.name}</p>
+    <p class="text-muted text-[14px]">
+      {PROFILE.location}
+      {PROFILE.status !== null && ` · ${PROFILE.status}`}
+    </p>
+  </div>
+
+  <div class="flex flex-col gap-10 md:col-span-7 lg:col-span-8">
+    <p class="text-[20px] leading-[1.5] tracking-[-0.01em] md:text-[22px]">{PROFILE.about}</p>
+    <dl class="border-ink grid border-t sm:grid-cols-2">
+      <div class="border-line border-b py-5 sm:pr-5">
+        <dt class={LABEL_CLASS}>FOKUS</dt>
+        {PROFILE.focus.map((item) => (
+          <dd class="font-semibold">{item}</dd>
+        ))}
+      </div>
+      <div class="border-line border-b py-5 sm:px-5">
+        <dt class={LABEL_CLASS}>PENDIDIKAN</dt>
+        <dd class="font-semibold">{education.degree}</dd>
+        <dd class="text-muted text-[15px]">
+          {education.school}
+          {education.startYear !== null && ` · ${education.startYear}–sekarang`}
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>

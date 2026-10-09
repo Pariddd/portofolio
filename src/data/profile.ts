@@ -1,18 +1,35 @@
 /**
- * Data profil. Field lain (fokus, pendidikan, kontak) menyusul bersama section-nya.
+ * Data profil. Kontak menyusul bersama footer.
  *
- * `tagline`, `role`, dan `summary` diambil dari mockup "FINAL — halaman lengkap".
+ * Teks hero dan isi kartu diambil dari mockup "FINAL — halaman lengkap". Field bernilai
+ * `null` belum diisi Parid; komponen menyembunyikan bagiannya sampai ada nilainya.
  */
 export const PROFILE = {
   name: 'Parid',
   tagline: 'security researcher · Informatika, Univ. Malikussaleh',
   role: 'Security researcher & full-stack developer',
   summary: 'Web exploitation, reverse engineering, dan machine learning untuk deteksi malware.',
-  /** Belum diisi Parid; lencana handle di hero baru tampil setelah ada nilainya. */
   handle: null as string | null,
   /** Path publik CV; tombolnya hanya tampil bila file ada di `public/`. */
   cvPath: '/cv/CV-Parid.pdf',
   /** Gambar hero masih sementara; perbarui teks ini saat ilustrasi final masuk. */
   heroArtAlt:
     'Ilustrasi karakter anime berambut putih dengan mata berwarna teal, berlatar kilatan petir.',
+
+  /**
+   * SEMENTARA: disusun dari deskripsi project di CLAUDE.md §1, bukan tulisan Parid.
+   * Ganti dengan ringkasan profesional 2–3 kalimat.
+   */
+  about:
+    'Mahasiswa Informatika Universitas Malikussaleh yang fokus pada keamanan siber: web exploitation, reverse engineering, dan machine learning untuk deteksi malware.',
+  photoAlt: 'Parid berdiri bersandar pada perahu putih di tepi danau, berkaus hitam.',
+  location: 'Lhokseumawe, Aceh',
+  status: null as string | null,
+  accessLabel: 'ACCESS · LVL 3',
+  focus: ['Web exploitation', 'Reverse engineering', 'ML untuk deteksi malware'],
+  education: {
+    degree: 'S1 Informatika',
+    school: 'Universitas Malikussaleh',
+    startYear: null as number | null,
+  },
 } as const;

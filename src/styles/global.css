@@ -74,6 +74,14 @@
   --ease-main: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-reveal: cubic-bezier(0.7, 0, 0.2, 1);
 
+  --animate-marquee: marquee 36s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   /* Design system: sudut tegas. Hanya kotak heatmap yang 2 px. */
   --radius-*: initial;
   --radius-heat: 2px;
