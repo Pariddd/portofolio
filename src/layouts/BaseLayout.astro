@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+// Script tema di <head> adalah satu-satunya inline script yang diizinkan. Jika isinya
+// berubah: `npm run build && npm run check:csp -- --print`, lalu perbarui hash di
+// public/_headers.
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link
+      rel="preload"
+      href="/fonts/schibsted-grotesk-latin-wght.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <script is:inline>
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch {
+          // Storage diblokir: ikuti preferensi sistem.
+        }
+        const dark =
+          stored === 'dark' ||
+          (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+  </head>
+  <body>
+    <a
+      href="#konten"
+      class="bg-ink text-bg sr-only px-4 py-3 font-mono text-[13px] focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50"
+    >
+      Lewati ke konten
+    </a>
+    <main id="konten">
+      <slot />
+    </main>
+  </body>
+</html>

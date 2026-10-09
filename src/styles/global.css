@@ -1,0 +1,129 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/schibsted-grotesk-latin-wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-wght.woff2') format('woff2');
+}
+
+/* Token tema. Nilai harus sama dengan tabel di CLAUDE.md §2. */
+:root {
+  color-scheme: light;
+  --bg: #eff3f2;
+  --panel: #ffffff;
+  --ink: #101718;
+  --muted: #45504f;
+  --faint: #566261;
+  --line: #d2dbda;
+  --accent: #0d7a79;
+  --accent-hi: #2cc6be;
+  --heat-0: #e1e8e7;
+  --heat-1: #a9d3d0;
+  --heat-2: #6fbab7;
+  --heat-3: #379c9a;
+  --heat-4: #0d7a79;
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #0b1213;
+  --panel: #121b1c;
+  --ink: #e7eeed;
+  --muted: #aebbba;
+  --faint: #8a9897;
+  --line: #22302f;
+  --accent: #5eead4;
+  --accent-hi: #5eead4;
+  --heat-0: #16211f;
+  --heat-1: #1f4f49;
+  --heat-2: #2f8177;
+  --heat-3: #45b5a5;
+  --heat-4: #5eead4;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-hi: var(--accent-hi);
+  --color-heat-0: var(--heat-0);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+
+  --font-sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --ease-main: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-reveal: cubic-bezier(0.7, 0, 0.2, 1);
+
+  /* Design system: sudut tegas. Hanya kotak heatmap yang 2 px. */
+  --radius-*: initial;
+  --radius-heat: 2px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    font-size: 44px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 16px;
+
+  @media (width >= 48rem) {
+    padding-inline: 32px;
+  }
+}
