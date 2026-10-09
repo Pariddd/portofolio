@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
+import SectionHeader from './SectionHeader.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="project" aria-labelledby="judul-project" class="container-page">
+  <div class="border-line border-t py-16 md:py-26">
+    <SectionHeader number="02" title="Project pilihan" id="judul-project" />
+    <ul class="mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-6">
+      {projects.map((project) => (
+        <li>
+          <ProjectCard project={project.data} />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

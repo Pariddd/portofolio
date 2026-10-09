@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>['data'];
+}
+
+const { project } = Astro.props;
+// Tanpa `url`, kartu hanya <article> biasa: tidak ada link yang tidak menuju ke mana pun.
+const Wrapper = project.url === undefined ? 'div' : 'a';
+const linkProps =
+  project.url === undefined
+    ? {}
+    : { href: project.url, target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<article class="h-full">
+  <Wrapper
+    {...linkProps}
+    class="border-line bg-panel hover:border-accent ease-main flex h-full min-h-[280px] flex-col gap-3.5 border p-7 transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+  >
+    <p class="text-faint flex justify-between gap-4 font-mono text-[12px]">
+      <span>{project.category}</span>
+      <span class="text-accent">{project.topic}</span>
+    </p>
+    <h3 class="text-[24px] leading-[1.2] font-bold tracking-[-0.02em]">{project.title}</h3>
+    <p class="text-muted text-[15px]">{project.summary}</p>
+    <p class="text-faint mt-auto flex justify-between gap-4 font-mono text-[12px]">
+      <span>{project.stack.join(' · ')}</span>
+      {project.url !== undefined && (
+        <span class="text-accent" aria-hidden="true">
+          &nearr;
+        </span>
+      )}
+    </p>
+  </Wrapper>
+</article>

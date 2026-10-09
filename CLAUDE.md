@@ -111,15 +111,15 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── check-csp.mjs          ✅ # Cocokkan inline script/style di dist/ dengan CSP _headers
 │   └── sync-htb.ts               # Ambil data HTB → src/data/htb-activity.json
 ├── src/
-│   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg (nanti: foto, sertifikat)
+│   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg (nanti: sertifikat)
 │   ├── components/
-│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About (nanti: Footer, ...)
+│   │   ├── astro/             ✅ # Komponen .astro: Navbar, ThemeToggle, Hero, Marquee, SectionHeader, About, Projects, ProjectCard (nanti: Footer, ...)
 │   │   └── react/                # Islands beranimasi (.tsx): Preload, HeroArt, PhotoCard, Heatmap
 │   ├── content/                  # Content Collections
-│   │   ├── projects/             # *.md, satu file per project
+│   │   ├── projects/          ✅ # *.md, satu file per project
 │   │   ├── certificates/         # *.yaml, satu file per sertifikat
 │   │   └── writeups/             # (v2, belum ditampilkan)
-│   ├── content.config.ts         # Skema Zod untuk semua collection
+│   ├── content.config.ts      ✅ # Skema Zod (baru collection projects)
 │   ├── data/
 │   │   ├── htb-activity.json     # Ditulis otomatis oleh GitHub Actions — jangan diedit manual
 │   │   ├── nav.ts             ✅ # Link anchor navbar
@@ -215,11 +215,11 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F2 — Tema terang/gelap + Navbar: toggle di navbar (komponen Astro + script eksternal, bukan island React), ikut `prefers-color-scheme` sampai pengguna memilih, pilihan disimpan di `localStorage`. Link navbar menunjuk ke section yang belum dibuat. (2026-10-09)
 - [x] F3 — Hero statis mengikuti artboard FINAL: tagline, nama, role, ringkasan, CTA project + CV, panel gambar miring dengan bingkai dan cincin. Gambar `src/assets/hero.jpg` **sementara** (674 px, persegi, masih berlatar); lencana `handle` tampil setelah `PROFILE.handle` diisi. (2026-10-09)
 - [x] F4 — Marquee tools: animasi CSS murni (bukan island React), berhenti saat hover, mati saat `prefers-reduced-motion`, plus kotak centang "jeda" yang muncul saat difokus keyboard. (2026-10-09)
-- [x] F5 — Tentang saya + kartu akses (statis): foto masih kotak placeholder, `about` teks sementara, `status`/`handle`/tahun masuk disembunyikan sampai diisi di `profile.ts`. (2026-10-09)
+- [x] F5 — Tentang saya + kartu akses (statis): foto `src/assets/photo.jpg` (dipotong 4:5, hitam-putih sampai kartu di-hover), `about` teks sementara, `status`/`handle`/tahun masuk disembunyikan sampai diisi di `profile.ts`. (2026-10-09)
+- [x] F6 — Project pilihan: Content Collection `projects` (skema Zod di `src/content.config.ts`), dua project dari mockup. Kartu tanpa `url` tidak menjadi link; project ketiga dan semua URL belum ada. (2026-10-09)
 
 Rencana (lihat `docs/PRD.md` §12):
 
-- [ ] F6 — Project pilihan (Content Collection)
 - [ ] F8 — Sertifikat dengan link verifikasi
 - [ ] F10 — Footer, `security.txt`
 - [ ] F12 — Halaman 404
