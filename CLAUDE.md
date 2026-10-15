@@ -101,6 +101,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 ├── docs/
 │   └── PRD.md                 ✅ # Spesifikasi produk lengkap
 ├── astro.config.mjs           ✅ # Konfigurasi Astro (static, React, Tailwind; sitemap di M4)
+├── wrangler.jsonc             ✅ # Deploy Cloudflare: build `npm run build`, unggah dist/ (mematikan konfigurasi otomatis), 404-page
 ├── tsconfig.json              ✅ # TypeScript strict
 ├── eslint.config.js           ✅ # ESLint flat config
 ├── prettier.config.mjs        ✅ # Prettier (+ plugin astro, tailwindcss)
@@ -245,12 +246,12 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] Favicon custom (SVG + ICO + apple-touch-icon). Gambar dibuat ulang dengan script sekali pakai bila desainnya berubah. (2026-10-09)
 - [x] CI (`ci.yml`) dan Dependabot. (2026-10-09)
 - [x] Perbaikan tanggal heatmap: sync terjadwal GitHub terlambat 3–7 jam, jadi XP dari sync sebelum 12.00 WIB dicatat ke hari sebelumnya; tiga entri awal digeser sehari. Tombol "Unduh CV" selalu dirender (cek `existsSync` gagal di build Cloudflare); keberadaan PDF dijaga `tests/unit/cv.test.ts`. (2026-10-16)
+- [x] `wrangler.jsonc`: tanpa file ini Cloudflare memakai konfigurasi otomatis yang memasang adapter dan Astro terbaru di luar lockfile (7.4.0 alih-alih 7.3.8), hash `astro-island` tidak cocok dengan CSP, dan semua island mati. Sekalian `not_found_handling: "404-page"`. (2026-10-16)
 
 Rencana (lihat `docs/PRD.md` §12):
 
 - [ ] Ganti semua data dummy: URL repo, penjelasan dan screenshot project, tiga sertifikat contoh (isi, gambar, PDF), LinkedIn & WhatsApp, ringkasan `about`, gambar hero
 - [ ] `security.txt` (butuh kontak asli)
-- [ ] Atur `not_found_handling` di Cloudflare supaya `404.html` dipakai
 - [ ] Hardening: CSP final, Playwright + axe, audit
 
 ## Referensi desain

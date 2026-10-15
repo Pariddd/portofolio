@@ -1,0 +1,15 @@
+// Konfigurasi deploy Cloudflare Workers (static assets).
+// Tanpa file ini Cloudflare memakai konfigurasi otomatis: memasang adapter Cloudflare dan
+// versi Astro terbaru di luar lockfile, sehingga hash script hidrasi tidak cocok lagi
+// dengan CSP di public/_headers dan semua island gagal jalan.
+{
+  "name": "portofolio",
+  "compatibility_date": "2026-10-01",
+  "build": {
+    "command": "npm run build",
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+  },
+}
