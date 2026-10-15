@@ -116,7 +116,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   ├── cv/                    ✅ # CV-Parid.pdf
 │   └── certificates/          ✅ # PDF sertifikat (saat ini contoh.pdf)
 ├── scripts/
-│   ├── check-csp.mjs          ✅ # Cocokkan hash inline script dan <style> di dist/ dengan CSP _headers
+│   ├── check-csp.mjs          ✅ # Cocokkan hash inline script dan <style> di dist/ dengan CSP _headers; `--live` memeriksa situs terdeploy
 │   └── sync-htb.ts            ✅ # Ambil progres HTB (endpoint publik, tanpa token) → src/data/htb-activity.json; `npm run sync:htb`
 ├── src/
 │   ├── assets/                ✅ # Gambar yang dioptimasi Astro: hero.jpg, photo.jpg, projects/ (screenshot), certificates/ (gambar sertifikat); isi dua folder terakhir masih contoh
@@ -150,7 +150,8 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
     ├── dependabot.yml         ✅ # npm + github-actions, mingguan
     └── workflows/
         ├── ci.yml             ✅ # audit, lint, typecheck, test, build, check:csp di setiap push ke main dan PR
-        └── sync-htb.yml       ✅ # cron sekali sehari (00.10 WIB) + workflow_dispatch
+        ├── sync-htb.yml       ✅ # cron sekali sehari (00.10 WIB) + workflow_dispatch
+        └── verify-live.yml    ✅ # `check:csp --live` setiap deploy Workers Builds di main sukses (event check_run) + workflow_dispatch
 ```
 
 ## 4. Aturan coding
@@ -247,6 +248,7 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] CI (`ci.yml`) dan Dependabot. (2026-10-09)
 - [x] Perbaikan tanggal heatmap: sync terjadwal GitHub terlambat 3–7 jam, jadi XP dari sync sebelum 12.00 WIB dicatat ke hari sebelumnya; tiga entri awal digeser sehari. Tombol "Unduh CV" selalu dirender (cek `existsSync` gagal di build Cloudflare); keberadaan PDF dijaga `tests/unit/cv.test.ts`. (2026-10-16)
 - [x] `wrangler.jsonc`: tanpa file ini Cloudflare memakai konfigurasi otomatis yang memasang adapter dan Astro terbaru di luar lockfile (7.4.0 alih-alih 7.3.8), hash `astro-island` tidak cocok dengan CSP, dan semua island mati. Sekalian `not_found_handling: "404-page"`. (2026-10-16)
+- [x] Verifikasi live (`verify-live.yml`): setelah deploy Cloudflare sukses, hash script/style di situs live dicocokkan dengan header CSP yang dikirim; workflow gagal (dan GitHub mengirim notifikasi) bila tidak cocok. (2026-10-16)
 
 Rencana (lihat `docs/PRD.md` §12):
 

@@ -1,0 +1,51 @@
+name: Verifikasi live
+
+# Build di Cloudflare bisa berbeda dari build CI (mis. versi Astro lain), dan hash script
+# yang tidak cocok dengan CSP mematikan semua island tanpa ada build yang gagal. Workflow
+# ini mencocokkan hash di situs live dengan header CSP-nya setiap deploy Cloudflare selesai.
+on:
+  check_run:
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-live
+  cancel-in-progress: true
+
+jobs:
+  csp:
+    # Hanya check run deploy Workers Builds yang sukses di main.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.check_run.app.slug == 'cloudflare-workers-and-pages' &&
+      github.event.check_run.conclusion == 'success' &&
+      github.event.check_run.check_suite.head_branch == 'main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Pasang Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      # Dibutuhkan untuk membaca `site` dari astro.config.mjs.
+      - name: Pasang dependensi
+        run: npm ci --ignore-scripts
+
+      # Dicoba beberapa kali supaya deploy yang baru selesai sempat tersebar.
+      - name: Periksa CSP situs live
+        run: |
+          for attempt in 1 2 3 4; do
+            npm run check:csp -- --live && exit 0
+            sleep 30
+          done
+          exit 1
