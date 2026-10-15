@@ -2,8 +2,8 @@
 import { TOOLS } from '../../data/tools';
 import MarqueeMotion from '../react/MarqueeMotion';
 
-// Digerakkan MarqueeMotion. Dua salinan daftar, masing-masing diakhiri jarak selebar
-// gap, membuat translateX(-50%) tepat satu putaran sehingga loop tidak melompat.
+// Digerakkan MarqueeMotion. Tiap salinan daftar diakhiri jarak selebar gap, jadi geser
+// sejauh satu salinan tepat satu putaran. Di layar lebar island menambah salinan.
 const LIST_CLASS = 'flex shrink-0 gap-14 pr-14';
 ---
 

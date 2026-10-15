@@ -135,7 +135,7 @@ Tema: class `.dark` di `<html>`; default ikut `prefers-color-scheme`; pilihan di
 │   │   └── tools.ts           ✅ # Daftar tools untuk marquee
 │   ├── layouts/
 │   │   └── BaseLayout.astro   ✅ # <head>, meta, script tema + penanda preload, skip link, Navbar, Footer
-│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, heatmap.ts, htb.ts, nav.ts, tooltip.ts, sitemap.ts
+│   ├── lib/                   ✅ # Utilitas murni: contrast.ts, theme.ts, preload.ts, motion.ts, parallax.ts, marquee.ts, heatmap.ts, htb.ts, nav.ts, tooltip.ts, sitemap.ts
 │   ├── pages/
 │   │   ├── index.astro        ✅ # Halaman utama
 │   │   ├── robots.txt.ts      ✅ # robots.txt, alamat sitemap mengikuti `site`
@@ -226,7 +226,7 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] Deploy pertama — repo `Pariddd/portofolio` terhubung ke Cloudflare Workers (static assets), auto-deploy tiap push ke `main`; header keamanan dari `_headers` terverifikasi di situs live. (2026-10-09)
 - [x] F2 — Tema terang/gelap + Navbar: toggle di navbar (komponen Astro + script eksternal, bukan island React), ikut `prefers-color-scheme` sampai pengguna memilih, pilihan disimpan di `localStorage`. Link navbar menunjuk ke section yang belum dibuat. (2026-10-09)
 - [x] F3 — Hero mengikuti artboard FINAL: tagline, nama lengkap `PROFILE.fullName` ("Farid Kurniawan", dua baris), role, ringkasan, CTA project + CV, panel gambar miring dengan bingkai dan cincin. Gambar `src/assets/hero.jpg` **sementara** (674 px, persegi, masih berlatar); lencana `handle` tampil setelah `PROFILE.handle` diisi. (2026-10-09)
-- [x] F4 — Marquee tools: digerakkan island `MarqueeMotion`, berhenti saat hover, diam saat `prefers-reduced-motion`, plus kotak centang "jeda" yang muncul saat difokus keyboard. (2026-10-09)
+- [x] F4 — Marquee tools: digerakkan island `MarqueeMotion` tanpa putus (island menambah salinan daftar sampai layar penuh, termasuk saat resize; `src/lib/marquee.ts`), berhenti saat hover, diam saat `prefers-reduced-motion`, plus kotak centang "jeda" yang muncul saat difokus keyboard. (2026-10-09)
 - [x] F5 — Tentang saya + kartu akses (statis): foto `src/assets/photo.jpg` (dipotong 4:5, hitam-putih sampai kartu di-hover), `about` teks sementara, `status`/`handle`/tahun masuk disembunyikan sampai diisi di `profile.ts`. (2026-10-09)
 - [x] F6 — Project pilihan: Content Collection `projects` (skema Zod di `src/content.config.ts`), dua project dari mockup. Kartu tanpa `url` tidak menjadi link; project ketiga belum ada, URL masih dummy. (2026-10-09)
 - [x] F1 — Preload TLS handshake: island `Preload`, ±2,3 detik, tampil di setiap muat halaman dan ditutup "Selamat datang.", tombol lewati, tidak tampil tanpa JavaScript atau saat reduced motion. (2026-10-09)
