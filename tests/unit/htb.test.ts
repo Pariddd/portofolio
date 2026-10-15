@@ -56,6 +56,15 @@ describe('applySync', () => {
     expect(second.trackingSince).toBe('2026-10-09');
   });
 
+  it('sync terjadwal yang terlambat sampai pagi tetap mencatat ke hari sebelumnya', () => {
+    const first = applySync(EMPTY_HTB_DATA, experience(500), badges, MIDNIGHT_RUN);
+    // 06.36 WIB tanggal 11 Oktober: jeda nyata GitHub Actions yang pernah terjadi.
+    const lateRun = new Date('2026-10-10T23:36:00Z');
+    expect(applySync(first, experience(540), badges, lateRun).days).toEqual({
+      '2026-10-10': 40,
+    });
+  });
+
   it('sync manual di siang hari mencatat ke hari itu dan menambah, bukan menimpa', () => {
     const base: HtbData = {
       ...applySync(EMPTY_HTB_DATA, experience(500), badges, MIDNIGHT_RUN),

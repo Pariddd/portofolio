@@ -10,11 +10,12 @@ export const HEATMAP_DAYS = 371;
 const KEEP_DAYS = 400;
 
 /**
- * Sync terjadwal jalan sesaat setelah tengah malam WIB. XP yang bertambah sejak sync
- * sebelumnya dicatat pada tanggal WIB "sekarang dikurangi jeda ini", jadi sync yang
- * terlambat beberapa jam tetap mencatat ke hari yang benar.
+ * Sync terjadwal dijadwalkan 00.10 WIB, tetapi GitHub sering menjalankannya 3–7 jam
+ * kemudian. XP yang bertambah sejak sync sebelumnya dicatat pada tanggal WIB "sekarang
+ * dikurangi jeda ini": sync sebelum pukul 12.00 WIB mencatat ke hari sebelumnya, sync
+ * manual setelahnya ke hari itu.
  */
-const ATTRIBUTION_LAG_HOURS = 3;
+const ATTRIBUTION_LAG_HOURS = 12;
 const JAKARTA_OFFSET_HOURS = 7;
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
