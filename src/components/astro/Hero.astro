@@ -1,13 +1,8 @@
 ---
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { Picture } from 'astro:assets';
 import heroArt from '../../assets/hero.jpg';
 import { PROFILE } from '../../data/profile';
 import HeroMotion from '../react/HeroMotion';
-
-// Tombol CV tidak dirender selama PDF-nya belum di-commit, supaya tidak ada link mati.
-const hasCv = existsSync(join(process.cwd(), 'public', PROFILE.cvPath));
 
 const BUTTON_CLASS = 'inline-flex min-h-12 items-center border px-[22px] text-[15px] font-semibold';
 // Panel miring dari mockup: sisi kiri atas turun 6%.
@@ -75,15 +70,13 @@ const ARC_CLASS =
         >
           Lihat project
         </a>
-        {hasCv && (
-          <a
-            href={PROFILE.cvPath}
-            download
-            class:list={[BUTTON_CLASS, 'border-ink text-ink hover:border-accent hover:text-accent']}
-          >
-            Unduh CV
-          </a>
-        )}
+        <a
+          href={PROFILE.cvPath}
+          download
+          class:list={[BUTTON_CLASS, 'border-ink text-ink hover:border-accent hover:text-accent']}
+        >
+          Unduh CV
+        </a>
       </div>
     </div>
 

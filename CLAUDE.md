@@ -244,6 +244,7 @@ Cara bertanya: ringkas, sebutkan pilihan yang masuk akal beserta trade-off singk
 - [x] F11 — SEO & meta: Open Graph + Twitter card dengan `og.png` (tangkapan layar hero mode terang; ganti filenya bila hero berubah), `theme-color`, sitemap dan robots.txt (endpoint statis, tanpa dependensi baru), 404 diberi `noindex`. Judul halaman memakai `PROFILE.fullName`. (2026-10-09)
 - [x] Favicon custom (SVG + ICO + apple-touch-icon). Gambar dibuat ulang dengan script sekali pakai bila desainnya berubah. (2026-10-09)
 - [x] CI (`ci.yml`) dan Dependabot. (2026-10-09)
+- [x] Perbaikan tanggal heatmap: sync terjadwal GitHub terlambat 3–7 jam, jadi XP dari sync sebelum 12.00 WIB dicatat ke hari sebelumnya; tiga entri awal digeser sehari. Tombol "Unduh CV" selalu dirender (cek `existsSync` gagal di build Cloudflare); keberadaan PDF dijaga `tests/unit/cv.test.ts`. (2026-10-16)
 
 Rencana (lihat `docs/PRD.md` §12):
 

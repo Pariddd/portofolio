@@ -12,7 +12,7 @@ export const PROFILE = {
   role: 'Security researcher & full-stack developer',
   summary: 'Web exploitation, reverse engineering, dan machine learning untuk deteksi malware.',
   handle: null as string | null,
-  /** Path publik CV; tombolnya hanya tampil bila file ada di `public/`. */
+  /** Path publik CV; keberadaan filenya di `public/` dijaga `tests/unit/cv.test.ts`. */
   cvPath: '/cv/CV-Parid.pdf',
   /** Gambar hero masih sementara; perbarui teks ini saat ilustrasi final masuk. */
   heroArtAlt:
