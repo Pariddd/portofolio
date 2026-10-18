@@ -1,11 +1,11 @@
 {
-  "syncedAt": "2026-10-17T19:17:58.914Z",
+  "syncedAt": "2026-10-18T19:23:51.570Z",
   "trackingSince": "2026-10-09",
   "stats": {
     "level": 4,
     "levelTitle": "Beginner",
-    "totalXp": 620,
-    "xpToNextLevel": 187,
+    "totalXp": 635,
+    "xpToNextLevel": 172,
     "streak": 1,
     "maxStreak": 1,
     "academyModules": 2,
@@ -15,6 +15,7 @@
     "2026-10-12": 40,
     "2026-10-13": 90,
     "2026-10-14": 10,
-    "2026-10-15": 480
+    "2026-10-15": 480,
+    "2026-10-18": 15
   }
 }
